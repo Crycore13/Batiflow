@@ -53,3 +53,18 @@
 
 ### Database
 - No schema yet — no user auth or check configuration tables exist
+
+---
+
+## 2026-04-14 Analyse de marché PlanningArtisan
+
+### Fichier produit
+- `docs/analyse-marche-planningartisan.md` — analyse de marché complète pour PlanningArtisan
+
+### Résumé des conclusions
+- **Marché cible :** ~230 000–265 000 artisans solo du bâtiment en France (63 % des TPE bâtiment)
+- **Gap concurrentiel :** pas de solution mono-produit ultra-simple dédiée au seul planning (les concurrents visent PME avec suites complètes)
+- **Principaux concurrents :** Alobees (~40 €/mois), Obat (~25 €/mois), Vertuoza (sur devis), Costructor (dès 12,50 €/mois)
+- **Pricing recommandé :** Freemium → 14,90 €/mois (Solo) → 24,90 €/mois (Pro)
+- **ARR cible à 36 mois :** ~1,15 M€ (6 000 clients payants)
+- **Verdict :** Projet viable, à condition de rester ultra-simple et mobile-first
