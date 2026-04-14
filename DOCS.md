@@ -39,7 +39,39 @@ Analyse complète rédigée dans `docs/analyse-marche-dossiersubvention.md`.
 
 ---
 
-## 2026-04-14 Landing Page
+## 2026-04-14 BatiFlow Landing Page (waitlist)
+
+### Pivot
+PageHush landing page replaced by BatiFlow — a cash flow preview tool for solo BTP tradespeople (artisans).
+
+### Stack
+- Next.js 16.2.3 (App Router), TypeScript, Tailwind CSS
+- Fonts: system-ui (no Google Fonts — lean and fast)
+- Theme: deep navy (#0f1923) background, construction orange (#f97316) accent
+
+### Pages
+- `/` — BatiFlow waitlist landing page (`app/page.tsx`)
+  - Header: BatiFlow logo only
+  - Hero: "Tu sais jamais si t'as assez pour finir le mois ?" headline + orange CTA
+  - Pain points: 3 cards (late payment, cash uncertainty, accountant too late)
+  - Solution: inline SVG 90-day cash flow timeline (green/orange/red bars)
+  - Waitlist form: email → POST /api/waitlist, success confirmation message
+  - Footer: "BatiFlow — Pour les artisans qui veulent garder la tête hors de l'eau"
+
+### API
+- `POST /api/waitlist` — saves email to `waitlist` table (PostgreSQL)
+  - Validates email format, ignores duplicates (ON CONFLICT DO NOTHING)
+
+### Database
+- Table `waitlist (id SERIAL, email VARCHAR UNIQUE, created_at TIMESTAMPTZ)`
+
+### Deployment
+- Pushed to `main` branch; Vercel auto-deploys
+- Live at `https://pagehush.nanocorp.app`
+
+---
+
+## 2026-04-14 PageHush Landing Page (REPLACED)
 
 ### Stack
 - Next.js 16.2.3 (App Router), TypeScript, Tailwind CSS
