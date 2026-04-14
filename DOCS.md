@@ -133,3 +133,28 @@ PageHush landing page replaced by BatiFlow — a cash flow preview tool for solo
 - **Pricing recommandé :** Freemium → 14,90 €/mois (Solo) → 24,90 €/mois (Pro)
 - **ARR cible à 36 mois :** ~1,15 M€ (6 000 clients payants)
 - **Verdict :** Projet viable, à condition de rester ultra-simple et mobile-first
+
+---
+
+## 2026-04-14 Rebranding PageHush → BatiFlow
+
+### Changements effectués
+
+**Produits Stripe**
+- Ancien produit `PageHush Pro` (ID: `97cffe98-ffff-4e08-8cd8-aab42bd86496`) supprimé
+- Nouveau produit `BatiFlow Pro` créé à 12,90 €/mois
+  - Product ID: `cadbdcad-2132-4446-819e-4c5facaf6729`
+  - Payment link: `https://buy.stripe.com/14A8wQfpW16vbCW9gLeOH1k`
+
+**Documents entreprise (nanocorp docs)**
+- `company_name` : "BatiFlow"
+- `description` : description de l'outil de trésorerie prévisionnelle pour artisans BTP solo
+- `mission` : mission BatiFlow centrée sur la trésorerie simple et mobile-first
+
+**Fichiers repo**
+- `README.md` : réécrit en français avec branding BatiFlow
+- `docs/audit.md` : titre mis à jour pour indiquer le statut pré-rebranding
+
+**Non modifié (intentionnel)**
+- Le beacon analytics `?s=pagehush` dans `app/layout.tsx` est l'identifiant plateforme NanoCorp — ne pas modifier
+- L'URL de déploiement `https://pagehush.nanocorp.app` est gérée par NanoCorp
