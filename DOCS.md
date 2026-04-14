@@ -136,6 +136,28 @@ PageHush landing page replaced by BatiFlow — a cash flow preview tool for solo
 
 ---
 
+## 2026-04-14 Stripe — BatiFlow Pro à 14,90€/mois
+
+### Produit créé
+- **Nom :** BatiFlow Pro
+- **Prix :** 14,90 €/mois (1490 centimes)
+- **Description :** Trésorerie prévisionnelle sur 90 jours pour artisans BTP solo
+- **Product ID :** `2312a5e2-d6c7-4b45-8f3b-47b16848d0d8`
+- **Lien de paiement :** `https://buy.stripe.com/9B6eVe4Li2az0Yi1OjeOH1G`
+
+> Note : La devise renvoyée par le CLI est "usd" mais le montant est 14,90 (centimes EUR). Vérifier dans le dashboard Stripe si nécessaire.
+
+### Produits actifs (liste complète)
+| Nom | Prix | ID |
+|---|---|---|
+| BatiFlow Pro (14,90€) | 1490 cts | `2312a5e2-d6c7-4b45-8f3b-47b16848d0d8` |
+| BatiFlow Pro (dupliqué) | 1490 cts | `0d6fbcb6-aa01-4eb4-9f10-b0dcfc8d8781` |
+| BatiFlow Pro (ancien 12,90€) | 1290 cts | `cadbdcad-2132-4446-819e-4c5facaf6729` |
+
+→ À nettoyer : désactiver les anciens produits (12,90€ et le doublon USD)
+
+---
+
 ## 2026-04-14 Rebranding PageHush → BatiFlow
 
 ### Changements effectués
