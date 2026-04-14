@@ -56,6 +56,23 @@
 
 ---
 
+## 2026-04-14 Analyse de marché CashChantier
+
+### Fichier produit
+- `docs/analyse-marche-cashchantier.md` — analyse de marché complète pour CashChantier
+
+### Résumé des conclusions
+- **Marché cible :** ~230 000–330 000 artisans solo du bâtiment en France (63 % sans salarié)
+- **Marché adressable réaliste :** 80 000–120 000 artisans digitalisés + pain-aware (~100 M€/an brut)
+- **Douleurs clés :** BFR invisible, décalage chantier→paiement (47 % factures payées avec > 30j retard), gestion "à vue" depuis le solde bancaire
+- **Gap concurrentiel net :** Agicap/Fygr = généralistes trop chers ; Obat/Batappli = devis/factures sans tréso prévi. Personne ne combine logique chantier + prévisionnel cash
+- **Principaux concurrents indirects :** Obat (25 €/mois), Batappli (79 €/mois), Fygr (59 €/mois), Agicap (149 €/mois+)
+- **Pricing recommandé :** essai 14j sans CB → Solo 12,90 €/mois → Pro 19,90 €/mois
+- **ARR cible à 36 mois :** ~900 000 € (5 000 clients payants)
+- **Verdict :** Créneau réel, timing favorable (crise BTP 2024–2025), viable si UX mobile-first ultra-simple
+
+---
+
 ## 2026-04-14 Analyse de marché PlanningArtisan
 
 ### Fichier produit
