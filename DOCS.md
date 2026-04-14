@@ -1,5 +1,21 @@
 # Project Docs
 
+## 2026-04-14 Analyse de Marché — DossierSubvention
+
+Analyse complète rédigée dans `docs/analyse-marche-dossiersubvention.md`.
+
+**Résumé des chiffres clés :**
+- ~62 000 artisans RGE en France (en baisse de 13 % depuis 2021)
+- 2,3 M dossiers MPR traités depuis 2020 ; ~207 000 en 2024
+- TAM estimé : ~36 M€/an ; SAM réaliste (20 % pénétration) : ~7 M€ ARR
+- Concurrent principal : Rénolib (10 M€ levés, cible PME)
+- Créneau disponible : solo/TPE, outil simple sans avance de trésorerie
+- Modèle recommandé : freemium → 29 €/mois, objectif 500 payants = ~14 500 €/mois MRR
+- Risque principal : instabilité réglementaire MPR (suspensions en cours)
+- Verdict : **VIABLE** avec différenciation sur la simplicité et distribution via syndicats (CAPEB)
+
+---
+
 ## 2026-04-14 Audit
 
 ### Repo state
