@@ -1,536 +1,457 @@
-"use client";
+const message1 =
+  "47 % des factures BTP sont payées avec plus de 30 jours de retard. BatiFlow vous permet de visualiser votre trésorerie sur 90 jours et d'être alerté avant d'être dans le rouge — depuis votre téléphone.";
 
-import { useState } from "react";
+const message2 =
+  "1 faillite sur 4 en France concerne le bâtiment, souvent faute de visibilité sur la trésorerie. BatiFlow est conçu pour les artisans indépendants : saisissez vos chantiers, suivez vos factures, sachez exactement si vous serez dans le vert le mois prochain.";
 
-function CashFlowTimeline() {
-  return (
-    <svg
-      viewBox="0 0 340 148"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-full"
-      role="img"
-      aria-label="Visualisation de trésorerie sur 90 jours"
-    >
-      {/* Labels mois */}
-      <text x="56" y="14" textAnchor="middle" fill="#94a3b8" fontSize="11" fontFamily="system-ui, sans-serif" fontWeight="600">AVRIL</text>
-      <text x="170" y="14" textAnchor="middle" fill="#94a3b8" fontSize="11" fontFamily="system-ui, sans-serif" fontWeight="600">MAI</text>
-      <text x="284" y="14" textAnchor="middle" fill="#94a3b8" fontSize="11" fontFamily="system-ui, sans-serif" fontWeight="600">JUIN</text>
+const message3 =
+  "BatiFlow centralise vos chantiers et vos paiements pour vous donner une vision claire à 90 jours, accessible en 2 minutes depuis votre téléphone.";
 
-      {/* Barre Avril - Vert */}
-      <rect x="10" y="22" width="92" height="80" rx="8" fill="#16a34a"/>
-      <rect x="10" y="22" width="92" height="80" rx="8" fill="url(#greenGrad)"/>
-      <text x="56" y="56" textAnchor="middle" fill="white" fontSize="16" fontFamily="system-ui, sans-serif" fontWeight="800">+8 400 €</text>
-      <text x="56" y="76" textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize="10" fontFamily="system-ui, sans-serif">Encaissé</text>
-      <text x="56" y="91" textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="9" fontFamily="system-ui, sans-serif">✓ Tout bon</text>
-
-      {/* Barre Mai - Orange */}
-      <rect x="124" y="22" width="92" height="80" rx="8" fill="#ea6d10"/>
-      <rect x="124" y="22" width="92" height="80" rx="8" fill="url(#orangeGrad)"/>
-      <text x="170" y="56" textAnchor="middle" fill="white" fontSize="16" fontFamily="system-ui, sans-serif" fontWeight="800">+3 200 €</text>
-      <text x="170" y="76" textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize="10" fontFamily="system-ui, sans-serif">En attente</text>
-      <text x="170" y="91" textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="9" fontFamily="system-ui, sans-serif">2 factures ouvertes</text>
-
-      {/* Barre Juin - Rouge */}
-      <rect x="238" y="22" width="92" height="80" rx="8" fill="#b91c1c"/>
-      <rect x="238" y="22" width="92" height="80" rx="8" fill="url(#redGrad)"/>
-      <text x="284" y="56" textAnchor="middle" fill="white" fontSize="16" fontFamily="system-ui, sans-serif" fontWeight="800">-1 800 €</text>
-      <text x="284" y="76" textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize="10" fontFamily="system-ui, sans-serif">Découvert prévu</text>
-      <text x="284" y="91" textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="9" fontFamily="system-ui, sans-serif">⚠ Alerte</text>
-
-      {/* Lignes séparatrices */}
-      <line x1="114" y1="22" x2="114" y2="102" stroke="#0f1923" strokeWidth="4"/>
-      <line x1="228" y1="22" x2="228" y2="102" stroke="#0f1923" strokeWidth="4"/>
-
-      {/* Barre de progression en bas */}
-      <rect x="10" y="112" width="320" height="6" rx="3" fill="rgba(255,255,255,0.07)"/>
-      <rect x="10" y="112" width="107" height="6" rx="3" fill="#22c55e"/>
-      <rect x="117" y="112" width="107" height="6" rx="3" fill="#f97316"/>
-      <rect x="224" y="112" width="106" height="6" rx="3" fill="#ef4444"/>
-
-      {/* Légende */}
-      <circle cx="22" cy="135" r="4" fill="#22c55e"/>
-      <text x="30" y="139" fill="#64748b" fontSize="9" fontFamily="system-ui, sans-serif">Encaissé</text>
-      <circle cx="90" cy="135" r="4" fill="#f97316"/>
-      <text x="98" y="139" fill="#64748b" fontSize="9" fontFamily="system-ui, sans-serif">En attente</text>
-      <circle cx="168" cy="135" r="4" fill="#ef4444"/>
-      <text x="176" y="139" fill="#64748b" fontSize="9" fontFamily="system-ui, sans-serif">Découvert prévu</text>
-
-      {/* Gradients */}
-      <defs>
-        <linearGradient id="greenGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(255,255,255,0.12)"/>
-          <stop offset="100%" stopColor="rgba(0,0,0,0.1)"/>
-        </linearGradient>
-        <linearGradient id="orangeGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(255,255,255,0.12)"/>
-          <stop offset="100%" stopColor="rgba(0,0,0,0.1)"/>
-        </linearGradient>
-        <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="rgba(255,255,255,0.12)"/>
-          <stop offset="100%" stopColor="rgba(0,0,0,0.1)"/>
-        </linearGradient>
-      </defs>
-    </svg>
-  );
-}
-
-const painPoints = [
+const metrics = [
   {
-    icon: "💸",
-    title: "Un client qui tarde à payer",
-    desc: "T'avances les matériaux de ta poche. Tu fais le chantier. L'argent arrive... quand ça lui chante.",
+    value: "47 %",
+    title: "factures en retard",
+    description: "Des paiements qui décalent vos achats, vos charges et votre marge.",
   },
   {
-    icon: "📅",
-    title: "Impossible de prévoir le mois prochain",
-    desc: "T'as des devis en cours, des factures impayées, des charges qui tombent. Mais tu sais jamais si le compte va tenir.",
+    value: "90 j",
+    title: "de visibilité",
+    description: "Une lecture immédiate de votre trésorerie à venir, directement sur mobile.",
   },
   {
-    icon: "🧾",
-    title: "Ton comptable te dit les mauvaises nouvelles trop tard",
-    desc: "T'es dans le rouge depuis 3 mois. Ton comptable t'apprend ça en mars. Pour les chiffres de novembre.",
+    value: "1 sur 4",
+    title: "faillites du bâtiment",
+    description: "Un marché où piloter à vue finit trop souvent par coûter cher.",
   },
 ];
 
-export default function BatiFlowPage() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState("");
+const features = [
+  {
+    code: "90J",
+    title: "Trésorerie 90 jours",
+    description:
+      "Visualisez vos entrées, vos sorties et votre niveau de sécurité avant la fin du mois.",
+  },
+  {
+    code: "CH",
+    title: "Suivi chantiers",
+    description:
+      "Regroupez vos chantiers, vos acomptes et vos soldes dans une seule vue mobile.",
+  },
+  {
+    code: "AR",
+    title: "Alertes retard",
+    description:
+      "Repérez tout de suite les paiements en retard et les périodes où votre solde se tend.",
+  },
+  {
+    code: "ML",
+    title: "Magic link",
+    description:
+      "Connectez-vous sans mot de passe, avec un lien sécurisé reçu sur votre e-mail.",
+  },
+];
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setStatus("loading");
-    setErrorMsg("");
+const chantierRows = [
+  {
+    client: "Villa Martin",
+    phase: "Facture finale envoyée",
+    amount: "4 200 EUR",
+    status: "Paiement attendu",
+  },
+  {
+    client: "Bureau Atlas",
+    phase: "Acompte encaissé",
+    amount: "2 600 EUR",
+    status: "En caisse",
+  },
+  {
+    client: "Maison Leroy",
+    phase: "Relance J+12",
+    amount: "1 180 EUR",
+    status: "Retard à suivre",
+  },
+];
 
-    try {
-      const res = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+const onboardingSteps = [
+  "Renseignez vos chantiers et vos encaissements à venir.",
+  "Recevez vos alertes de retard directement sur mobile.",
+  "Consultez votre horizon à 90 jours sans mot de passe.",
+];
 
-      if (res.ok) {
-        setStatus("success");
-      } else {
-        const data = await res.json().catch(() => ({}));
-        setErrorMsg(data.error || "Une erreur s'est produite. Réessaie.");
-        setStatus("error");
-      }
-    } catch {
-      setErrorMsg("Une erreur s'est produite. Réessaie.");
-      setStatus("error");
-    }
-  }
-
-  const scrollToWaitlist = () => {
-    document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
-  };
-
+function TreasuryPhone() {
   return (
-    <div
-      className="min-h-screen text-white"
-      style={{ fontFamily: "system-ui, -apple-system, 'Segoe UI', sans-serif", background: "#0f1923" }}
-    >
-      {/* Subtle texture overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 20% 50%, rgba(249,115,22,0.04) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(249,115,22,0.03) 0%, transparent 40%)",
-        }}
-      />
-
-      {/* ── HEADER ── */}
-      <header className="relative z-10 px-5 py-4 border-b border-white/[0.07]">
-        <div className="max-w-4xl mx-auto flex items-center gap-3">
-          <div
-            className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-            style={{ background: "#f97316" }}
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-              <path d="M3 14L7 8l3 4 2-3 3 5" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+    <div className="relative mx-auto w-full max-w-[20rem] rounded-[2rem] border border-[var(--line)] bg-white p-3 shadow-[0_30px_80px_rgba(23,33,43,0.12)]">
+      <div className="rounded-[1.65rem] border border-black/5 bg-[linear-gradient(180deg,#ffffff_0%,#f4f7f9_100%)] p-4">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+              Vue trésorerie
+            </p>
+            <h3 className="font-[family:var(--font-display)] text-[1.55rem] uppercase leading-none text-[var(--ink)]">
+              90 jours
+            </h3>
           </div>
-          <span style={{ fontWeight: 900, fontSize: "1.2rem", letterSpacing: "-0.02em" }}>
-            BatiFlow
-          </span>
+          <div className="rounded-full border border-[var(--line)] bg-[var(--paper-soft)] px-3 py-1 text-xs font-semibold text-[var(--ink)]">
+            Solde prévu
+          </div>
+        </div>
+
+        <div className="rounded-[1.4rem] border border-[var(--line)] bg-[var(--paper-soft)] p-4">
+          <div className="mb-4 flex items-end justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
+                Juin
+              </p>
+              <p className="text-3xl font-semibold text-[var(--ink)]">6 430 EUR</p>
+            </div>
+            <div className="rounded-full bg-[#e8f3eb] px-3 py-1 text-xs font-semibold text-[#22623e]">
+              + 820 EUR
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="rounded-2xl bg-white p-3 shadow-sm">
+              <div className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
+                <span>Avril</span>
+                <span>Solide</span>
+              </div>
+              <div className="flex h-3 overflow-hidden rounded-full bg-[#edf1f4]">
+                <div className="w-[72%] rounded-full bg-[#326f59]" />
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-white p-3 shadow-sm">
+              <div className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
+                <span>Mai</span>
+                <span>Vigilance</span>
+              </div>
+              <div className="flex h-3 overflow-hidden rounded-full bg-[#edf1f4]">
+                <div className="w-[58%] rounded-full bg-[#d55b2d]" />
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-white p-3 shadow-sm">
+              <div className="mb-2 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
+                <span>Juin</span>
+                <span>Alerte</span>
+              </div>
+              <div className="flex h-3 overflow-hidden rounded-full bg-[#edf1f4]">
+                <div className="w-[34%] rounded-full bg-[#b84b38]" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+          <div className="rounded-2xl border border-[var(--line)] bg-white p-3">
+            <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Encaissements</p>
+            <p className="mt-2 text-lg font-semibold text-[var(--ink)]">12 400 EUR</p>
+          </div>
+          <div className="rounded-2xl border border-[var(--line)] bg-white p-3">
+            <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Retards</p>
+            <p className="mt-2 text-lg font-semibold text-[var(--ink)]">3 factures</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ChantiersPhone() {
+  return (
+    <div className="relative mx-auto w-full max-w-[18rem] rounded-[2rem] border border-[var(--line)] bg-white p-3 shadow-[0_28px_70px_rgba(23,33,43,0.12)]">
+      <div className="rounded-[1.65rem] border border-black/5 bg-white p-4">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+              Chantiers
+            </p>
+            <h3 className="font-[family:var(--font-display)] text-[1.45rem] uppercase leading-none text-[var(--ink)]">
+              Paiements
+            </h3>
+          </div>
+          <div className="rounded-full bg-[#f3ede9] px-3 py-1 text-xs font-semibold text-[var(--accent-dark)]">
+            3 actifs
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {chantierRows.map((row) => (
+            <article
+              key={row.client}
+              className="rounded-2xl border border-[var(--line)] bg-[var(--paper-soft)] p-3"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-[var(--ink)]">{row.client}</p>
+                  <p className="mt-1 text-sm text-[var(--muted)]">{row.phase}</p>
+                </div>
+                <span className="rounded-full bg-white px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+                  {row.status}
+                </span>
+              </div>
+              <div className="mt-3 flex items-center justify-between border-t border-[var(--line)] pt-3">
+                <span className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
+                  Montant
+                </span>
+                <span className="text-sm font-semibold text-[var(--ink)]">{row.amount}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-dashed border-[var(--line)] p-3 text-sm text-[var(--muted)]">
+          Magic link actif : connexion sans mot de passe sur ce téléphone.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <div className="bg-site min-h-screen text-[var(--ink)]">
+      <header className="sticky top-0 z-30 border-b border-black/5 bg-white/88 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[var(--line)] bg-[var(--paper-soft)]">
+              <div className="h-6 w-6 rounded-lg bg-[linear-gradient(135deg,#d55b2d_0%,#f0b182_100%)]" />
+            </div>
+            <div>
+              <p className="font-[family:var(--font-display)] text-xl uppercase tracking-[0.12em]">
+                BatiFlow
+              </p>
+              <p className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
+                Trésorerie artisan BTP
+              </p>
+            </div>
+          </div>
+
+          <a
+            href="#creation-compte"
+            className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[var(--ink)] px-5 text-center text-sm font-semibold text-white transition hover:-translate-y-0.5"
+          >
+            Créer mon compte gratuitement
+          </a>
         </div>
       </header>
 
-      {/* ── HERO ── */}
-      <section className="relative z-10 px-5 pt-14 pb-20 max-w-4xl mx-auto">
-        <div
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8"
-          style={{
-            background: "rgba(249,115,22,0.1)",
-            border: "1px solid rgba(249,115,22,0.25)",
-          }}
-        >
-          <span
-            className="w-2 h-2 rounded-full"
-            style={{ background: "#f97316" }}
-          />
-          <span
-            style={{
-              fontSize: "0.7rem",
-              fontWeight: 700,
-              color: "#f97316",
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-            }}
-          >
-            Plombiers · Électriciens · Maçons · Peintres · Menuisiers
-          </span>
-        </div>
-
-        <h1
-          style={{
-            fontSize: "clamp(2.2rem, 8vw, 3.8rem)",
-            fontWeight: 900,
-            lineHeight: 1.05,
-            letterSpacing: "-0.03em",
-            marginBottom: "1.5rem",
-          }}
-        >
-          Tu sais jamais si t&apos;as
-          <br />
-          assez pour{" "}
-          <span style={{ color: "#f97316" }}>finir le mois&nbsp;?</span>
-        </h1>
-
-        <p
-          className="text-slate-300 mb-10"
-          style={{ fontSize: "1.1rem", lineHeight: 1.65, maxWidth: "560px" }}
-        >
-          <strong style={{ color: "white" }}>47% des factures BTP</strong> sont
-          payées en retard.{" "}
-          <strong style={{ color: "white" }}>1 faillite sur 4</strong>{" "}en
-          France, c&apos;est dans le bâtiment. T&apos;es pas seul — mais t&apos;as besoin de
-          voir venir.
-        </p>
-
-        <button
-          onClick={scrollToWaitlist}
-          className="inline-flex items-center gap-3 rounded-xl text-white font-bold transition-transform hover:scale-[1.02] active:scale-[0.98]"
-          style={{
-            background: "#f97316",
-            padding: "1rem 1.75rem",
-            fontSize: "1rem",
-            boxShadow: "0 0 48px rgba(249,115,22,0.35)",
-          }}
-        >
-          Rejoindre la liste d&apos;attente
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-            <path
-              d="M3 9h12M10 4l5 5-5 5"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-
-        <p className="mt-4 text-sm" style={{ color: "#475569" }}>
-          Gratuit · Aucun engagement · Tu seras prévenu en premier
-        </p>
-      </section>
-
-      {/* ── PAIN POINTS ── */}
-      <section
-        className="relative z-10 px-5 py-20"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-      >
-        <div className="max-w-4xl mx-auto">
-          <h2
-            style={{
-              fontSize: "clamp(1.5rem, 5vw, 2.2rem)",
-              fontWeight: 900,
-              letterSpacing: "-0.02em",
-              lineHeight: 1.2,
-              marginBottom: "3rem",
-            }}
-          >
-            Le problème,{" "}
-            <span style={{ color: "#64748b" }}>t&apos;es pas le seul à le vivre</span>
-          </h2>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            {painPoints.map((p, i) => (
-              <div
-                key={i}
-                style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderLeft: "3px solid #f97316",
-                  borderRadius: "12px",
-                  padding: "1.5rem",
-                }}
-              >
-                <span style={{ fontSize: "2rem", display: "block", marginBottom: "0.75rem" }}>
-                  {p.icon}
-                </span>
-                <h3
-                  style={{
-                    fontWeight: 700,
-                    fontSize: "0.95rem",
-                    marginBottom: "0.5rem",
-                    color: "white",
-                  }}
-                >
-                  {p.title}
-                </h3>
-                <p style={{ fontSize: "0.875rem", color: "#94a3b8", lineHeight: 1.6 }}>
-                  {p.desc}
-                </p>
+      <main id="top">
+        <section className="relative overflow-hidden">
+          <div className="hero-glow absolute inset-x-0 top-0 h-[32rem]" />
+          <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 pb-14 pt-10 sm:px-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:px-8 lg:pb-24 lg:pt-16">
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-white px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--muted)] shadow-sm">
+                Pensé mobile
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+                Sans mot de passe
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ── SOLUTION ── */}
-      <section
-        className="relative z-10 px-5 py-20"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-      >
-        <div className="max-w-4xl mx-auto">
-          <h2
-            style={{
-              fontSize: "clamp(1.5rem, 5vw, 2.2rem)",
-              fontWeight: 900,
-              letterSpacing: "-0.02em",
-              lineHeight: 1.2,
-              marginBottom: "0.5rem",
-            }}
-          >
-            BatiFlow : vois ta tréso sur{" "}
-            <span style={{ color: "#f97316" }}>90 jours</span>, d&apos;un coup
-            d&apos;œil
-          </h2>
-          <p style={{ color: "#94a3b8", marginBottom: "2.5rem", fontSize: "1rem" }}>
-            Depuis ton téléphone. Sans formation. Sans tableur.
-          </p>
+              <h1 className="mt-6 max-w-3xl font-[family:var(--font-display)] text-[3.1rem] uppercase leading-[0.92] tracking-[-0.04em] text-[var(--ink)] sm:text-[4.4rem]">
+                La trésorerie chantier, enfin lisible depuis votre téléphone.
+              </h1>
 
-          {/* Timeline SVG */}
-          <div
-            style={{
-              background: "#162030",
-              borderRadius: "16px",
-              padding: "1.5rem",
-              marginBottom: "2.5rem",
-              border: "1px solid rgba(255,255,255,0.07)",
-            }}
-          >
-            <p
-              style={{
-                fontSize: "0.75rem",
-                color: "#64748b",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-                marginBottom: "1rem",
-              }}
-            >
-              Trésorerie prévisionnelle — 90 jours
-            </p>
-            <CashFlowTimeline />
-          </div>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--muted)] sm:text-xl">
+                {message1}
+              </p>
 
-          <ul className="space-y-4">
-            {[
-              "Connecte tes factures en 2 minutes",
-              "Vois exactement quand l'argent rentre (et quand ça risque de manquer)",
-              "Reçois une alerte avant d'être dans le rouge",
-            ].map((item, i) => (
-              <li key={i} className="flex items-start gap-3">
-                <span
-                  className="shrink-0 flex items-center justify-center rounded-full mt-0.5"
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    background: "rgba(249,115,22,0.15)",
-                    border: "1px solid rgba(249,115,22,0.4)",
-                  }}
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="#creation-compte"
+                  className="inline-flex min-h-14 items-center justify-center rounded-2xl bg-[var(--accent)] px-6 text-center text-base font-semibold text-white shadow-[0_18px_35px_rgba(213,91,45,0.24)] transition hover:-translate-y-0.5"
                 >
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                    <path
-                      d="M2 5l2 2 4-4"
-                      stroke="#f97316"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-                <span style={{ color: "#cbd5e1", fontSize: "0.975rem", lineHeight: 1.55 }}>
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+                  Créer mon compte gratuitement
+                </a>
+                <a
+                  href="#produit"
+                  className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-[var(--line)] bg-white px-6 text-center text-base font-semibold text-[var(--ink)] transition hover:-translate-y-0.5"
+                >
+                  Voir le produit
+                </a>
+              </div>
 
-      {/* ── WAITLIST FORM ── */}
-      <section
-        id="waitlist"
-        className="relative z-10 px-5 py-20"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-      >
-        <div style={{ maxWidth: "480px", margin: "0 auto" }}>
-          <div className="text-center mb-10">
-            <div
-              className="inline-flex items-center gap-2 rounded-full mb-6"
-              style={{
-                background: "rgba(249,115,22,0.1)",
-                border: "1px solid rgba(249,115,22,0.25)",
-                padding: "0.375rem 0.875rem",
-              }}
-            >
-              <span
-                className="w-2 h-2 rounded-full"
-                style={{ background: "#f97316", animation: "pulse 2s infinite" }}
-              />
-              <span
-                style={{
-                  fontSize: "0.7rem",
-                  fontWeight: 700,
-                  color: "#f97316",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                }}
+              <div className="mt-6 flex flex-wrap gap-3 text-sm text-[var(--muted)]">
+                <span className="rounded-full border border-[var(--line)] bg-white px-3 py-2">
+                  Vue 90 jours
+                </span>
+                <span className="rounded-full border border-[var(--line)] bg-white px-3 py-2">
+                  Suivi chantiers
+                </span>
+                <span className="rounded-full border border-[var(--line)] bg-white px-3 py-2">
+                  Alertes retard
+                </span>
+              </div>
+            </div>
+
+            <div id="produit" className="relative z-10">
+              <div className="paper-grid relative rounded-[2rem] border border-[var(--line)] bg-white p-5 shadow-[0_24px_80px_rgba(23,33,43,0.08)] sm:p-6">
+                <div className="mb-5 flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+                      Aperçu produit
+                    </p>
+                    <p className="mt-1 font-[family:var(--font-display)] text-2xl uppercase tracking-[0.04em]">
+                      Trésorerie + chantiers
+                    </p>
+                  </div>
+                  <div className="rounded-full border border-[var(--line)] bg-[var(--paper-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
+                    Application mobile
+                  </div>
+                </div>
+
+                <div className="grid gap-5 lg:grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)]">
+                  <TreasuryPhone />
+                  <div className="lg:translate-y-10">
+                    <ChantiersPhone />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-6xl px-4 pb-10 sm:px-6 lg:px-8">
+          <div className="grid gap-4 md:grid-cols-3">
+            {metrics.map((metric) => (
+              <article
+                key={metric.title}
+                className="rounded-[1.75rem] border border-[var(--line)] bg-white p-6 shadow-[0_18px_40px_rgba(23,33,43,0.05)]"
               >
-                Lancement bientôt
+                <p className="font-[family:var(--font-display)] text-4xl uppercase tracking-[-0.03em] text-[var(--ink)]">
+                  {metric.value}
+                </p>
+                <h2 className="mt-3 text-lg font-semibold text-[var(--ink)]">{metric.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">{metric.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:px-8 lg:py-16">
+          <article className="rounded-[2rem] border border-[var(--line)] bg-[var(--ink)] p-7 text-white shadow-[0_24px_70px_rgba(23,33,43,0.16)]">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/60">
+              Réalité terrain
+            </p>
+            <p className="mt-4 text-lg leading-8 text-white/84">{message2}</p>
+            <div className="mt-8 flex flex-wrap gap-3 text-sm text-white/72">
+              <span className="rounded-full border border-white/10 bg-white/6 px-3 py-2">
+                Artisans indépendants
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/6 px-3 py-2">
+                Lecture immédiate
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/6 px-3 py-2">
+                Décision plus sereine
               </span>
             </div>
+          </article>
 
-            <h2
-              style={{
-                fontSize: "clamp(1.5rem, 5vw, 2rem)",
-                fontWeight: 900,
-                letterSpacing: "-0.02em",
-                lineHeight: 1.2,
-                marginBottom: "0.75rem",
-              }}
-            >
-              Sois parmi les premiers
-              <br />
-              à tester BatiFlow
-            </h2>
-            <p style={{ color: "#94a3b8", fontSize: "0.975rem", lineHeight: 1.6 }}>
-              On lance dans quelques semaines. Inscris-toi pour être prévenu en
-              avant-première.
+          <div className="grid gap-4 sm:grid-cols-2">
+            {features.map((feature) => (
+              <article
+                key={feature.title}
+                className="rounded-[1.75rem] border border-[var(--line)] bg-white p-6 shadow-[0_18px_40px_rgba(23,33,43,0.05)]"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--paper-soft)] font-[family:var(--font-display)] text-xl uppercase text-[var(--accent)]">
+                  {feature.code}
+                </div>
+                <h2 className="mt-5 text-xl font-semibold text-[var(--ink)]">{feature.title}</h2>
+                <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{feature.description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="creation-compte" className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-16">
+          <div className="grid gap-6 rounded-[2rem] border border-[var(--line)] bg-white p-6 shadow-[0_20px_70px_rgba(23,33,43,0.06)] lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] lg:p-8">
+            <div className="rounded-[1.75rem] bg-[var(--paper-soft)] p-6">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+                Message clé
+              </p>
+              <p className="mt-4 text-lg leading-8 text-[var(--ink)]">{message3}</p>
+
+              <div className="mt-8 space-y-3">
+                {onboardingSteps.map((step, index) => (
+                  <div
+                    key={step}
+                    className="flex items-start gap-4 rounded-2xl border border-white bg-white p-4"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--ink)] font-[family:var(--font-display)] text-lg text-white">
+                      {index + 1}
+                    </div>
+                    <p className="pt-1 text-sm leading-6 text-[var(--muted)]">{step}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-[1.75rem] border border-dashed border-[var(--line)] p-6">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--muted)]">
+                Accès simple
+              </p>
+              <h2 className="mt-4 font-[family:var(--font-display)] text-[2.35rem] uppercase leading-none tracking-[-0.03em] text-[var(--ink)]">
+                Démarrez sans mot de passe.
+              </h2>
+              <p className="mt-4 text-base leading-7 text-[var(--muted)]">
+                BatiFlow privilégie un démarrage direct sur mobile, avec de grands points de contact et une connexion par magic link.
+              </p>
+
+              <div className="mt-8 rounded-[1.6rem] bg-[var(--ink)] p-5 text-white">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/55">
+                      Bouton principal
+                    </p>
+                    <p className="mt-2 text-xl font-semibold text-white">
+                      Votre accès démarre depuis le bouton principal.
+                    </p>
+                  </div>
+                  <div className="rounded-full bg-white/8 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-white/72">
+                    Mobile
+                  </div>
+                </div>
+
+                <a
+                  href="#top"
+                  className="mt-6 inline-flex min-h-14 w-full items-center justify-center rounded-2xl bg-[var(--accent)] px-6 text-center text-base font-semibold text-white shadow-[0_18px_35px_rgba(213,91,45,0.2)] transition hover:-translate-y-0.5"
+                >
+                  Créer mon compte gratuitement
+                </a>
+
+                <div className="mt-4 flex flex-wrap gap-3 text-sm text-white/72">
+                  <span className="rounded-full border border-white/10 px-3 py-2">
+                    Connexion sécurisée
+                  </span>
+                  <span className="rounded-full border border-white/10 px-3 py-2">
+                    Sans mot de passe
+                  </span>
+                  <span className="rounded-full border border-white/10 px-3 py-2">
+                    Utilisable sur chantier
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="border-t border-black/6 bg-white">
+        <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:px-8">
+          <div>
+            <p className="font-[family:var(--font-display)] text-2xl uppercase tracking-[0.08em] text-[var(--ink)]">
+              BatiFlow
+            </p>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--muted)]">
+              Outil de pilotage de trésorerie pour artisans du bâtiment, pensé pour une utilisation simple sur téléphone.
             </p>
           </div>
 
-          {status === "success" ? (
-            <div
-              style={{
-                background: "rgba(34,197,94,0.08)",
-                border: "1px solid rgba(34,197,94,0.25)",
-                borderRadius: "16px",
-                padding: "2rem",
-                textAlign: "center",
-              }}
-            >
-              <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>✅</div>
-              <p
-                style={{
-                  fontWeight: 800,
-                  fontSize: "1.1rem",
-                  color: "#4ade80",
-                  marginBottom: "0.75rem",
-                }}
-              >
-                C&apos;est bon !
-              </p>
-              <p style={{ color: "#94a3b8", fontSize: "0.9rem", lineHeight: 1.65 }}>
-                On te prévient dès que c&apos;est prêt. Tu seras parmi les premiers
-                artisans à tester BatiFlow.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="ton@email.fr"
-                required
-                disabled={status === "loading"}
-                style={{
-                  width: "100%",
-                  padding: "1rem 1.25rem",
-                  borderRadius: "12px",
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.12)",
-                  color: "white",
-                  fontSize: "1rem",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                  boxSizing: "border-box",
-                }}
-                onFocus={(e) => (e.target.style.borderColor = "rgba(249,115,22,0.6)")}
-                onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.12)")}
-              />
-
-              {status === "error" && errorMsg && (
-                <p style={{ color: "#f87171", fontSize: "0.875rem", paddingLeft: "0.25rem" }}>
-                  {errorMsg}
-                </p>
-              )}
-
-              <button
-                type="submit"
-                disabled={status === "loading"}
-                style={{
-                  width: "100%",
-                  padding: "1rem 1.75rem",
-                  borderRadius: "12px",
-                  background: status === "loading" ? "rgba(249,115,22,0.6)" : "#f97316",
-                  color: "white",
-                  fontWeight: 700,
-                  fontSize: "1rem",
-                  border: "none",
-                  cursor: status === "loading" ? "not-allowed" : "pointer",
-                  transition: "transform 0.15s, background 0.2s",
-                  boxShadow: "0 0 40px rgba(249,115,22,0.3)",
-                }}
-                onMouseEnter={(e) => {
-                  if (status !== "loading")
-                    (e.currentTarget as HTMLButtonElement).style.background = "#ea6d10";
-                }}
-                onMouseLeave={(e) => {
-                  if (status !== "loading")
-                    (e.currentTarget as HTMLButtonElement).style.background = "#f97316";
-                }}
-              >
-                {status === "loading" ? "Inscription en cours..." : "Je veux être prévenu en premier"}
-              </button>
-
-              <p
-                className="text-center"
-                style={{ fontSize: "0.75rem", color: "#475569", marginTop: "0.25rem" }}
-              >
-                Pas de spam. Juste un email quand on est prêt.
-              </p>
-            </form>
-          )}
-        </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer
-        className="relative z-10 px-5 py-8"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <p style={{ color: "#475569", fontSize: "0.875rem" }}>
-            <strong style={{ color: "#64748b" }}>BatiFlow</strong> — Pour les
-            artisans qui veulent garder la tête hors de l&apos;eau
-          </p>
+          <div className="grid gap-2 text-sm text-[var(--muted)] sm:justify-end">
+            <p>Mentions légales : BatiFlow, produit édité par PageHush.</p>
+            <p>Hébergement : plateforme NanoCorp.</p>
+            <p>Objet : démonstration commerciale d’un logiciel de pilotage de trésorerie.</p>
+          </div>
         </div>
       </footer>
     </div>

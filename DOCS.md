@@ -24,6 +24,50 @@ Stratégie complète rédigée dans `docs/strategie-acquisition-j3-j7.md`.
 
 ---
 
+## 2026-04-15 Exploration — Refonte landing BatiFlow
+
+### État initial constaté
+- La page d’accueil active est encore la landing waitlist BatiFlow dans `app/page.tsx`.
+- Le design actuel est sombre (`#0f1923`), avec tutoiement, CTA de liste d’attente et formulaire email connecté à `POST /api/waitlist`.
+- Les métadonnées dans `app/layout.tsx` reprennent encore la promesse waitlist centrée sur "Tu sais jamais si t'as assez pour finir le mois ?".
+- `app/globals.css` contient des variables et animations prévues pour un univers sombre hérité de la landing précédente.
+- `app/api/waitlist/route.ts` est toujours présent et fonctionnel ; la refonte landing peut le laisser en place même si le hero n’expose plus la logique de waitlist.
+
+### Contraintes techniques relevées
+- Le dépôt contient `package.json`, `app/layout.tsx`, `app/globals.css`, `app/page.tsx`, `app/api/waitlist/route.ts`, `postcss.config.mjs`.
+- Les dépendances Next/React sont déclarées, mais `node_modules/` n’était pas présent au début de l’exploration locale ; il faut donc installer les paquets avant de lire la doc Next embarquée et lancer le build.
+
+---
+
+## 2026-04-15 Refonte landing BatiFlow — thème clair
+
+### Documentation Next consultée
+- `node_modules/next/dist/docs/01-app/01-getting-started/03-layouts-and-pages.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/11-css.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/13-fonts.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/14-metadata-and-og-images.md`
+
+### Changements réalisés
+- `app/page.tsx` entièrement réécrit pour remplacer la landing waitlist sombre par une landing claire, mobile-first, en français avec vouvoiement.
+- Les trois messages d’accroche fournis ont été intégrés tels quels dans la page.
+- Le CTA principal visible sur la page est désormais `Créer mon compte gratuitement`.
+- Deux maquettes produit mobiles ont été ajoutées directement dans la landing : vue trésorerie 90 jours et liste chantiers/paiements.
+- Une section fonctionnalités claire a été ajoutée avec : trésorerie 90 jours, suivi chantiers, alertes retard, magic link.
+- Un bloc social proof met en avant les statistiques BTP `47 %` et `1 sur 4`.
+- `app/layout.tsx` mis à jour avec une nouvelle metadata cohérente avec la refonte et des polices `next/font` auto-hébergées (`IBM Plex Sans`, `IBM Plex Sans Condensed`).
+- `app/globals.css` remplacé pour un thème clair unique (`#F8F9FA` / blanc), avec grille légère, halo doux et variables de design dédiées.
+
+### Validation effectuée
+- `npm run lint` ✅
+- `npm run build` ✅
+- Inspection locale avec `agent-browser` sur `http://127.0.0.1:3000` en viewport mobile ✅
+  - CTA présents
+  - Hero lisible
+  - Maquettes produit rendues
+  - Sections features / CTA final détectées
+
+---
+
 ## 2026-04-15 Messages de prospection WhatsApp/SMS — Artisans BTP
 
 3 messages cold outreach rédigés dans `docs/prospection-whatsapp-btp.md`.
