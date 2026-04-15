@@ -65,6 +65,10 @@ Stratégie complète rédigée dans `docs/strategie-acquisition-j3-j7.md`.
   - Hero lisible
   - Maquettes produit rendues
   - Sections features / CTA final détectées
+- Vérification post-push après 90 secondes sur `https://pagehush.nanocorp.app` ⚠️
+  - Une seule tentative effectuée, conformément à la consigne
+  - Le site public servait encore l’ancienne landing waitlist au moment du contrôle
+  - Déploiement Vercel probablement en cours ou page encore en cache
 
 ---
 
