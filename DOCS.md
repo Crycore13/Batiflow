@@ -1,5 +1,12 @@
 # Project Docs
 
+## 2026-04-15 — Guide achat domaine & connexion Vercel
+
+- `docs/guide-domaine-vercel.md` : guide opérationnel complet pour acheter `getbatiflow.fr` ou `batiflow.app` et connecter le domaine à Vercel.
+- Registrar recommandé : **OVH** (~7€/an pour `.fr`)
+- Domaine recommandé : **`getbatiflow.fr`** (marché France artisans BTP)
+- Après achat : ajouter le domaine dans Vercel (Settings → Domains), configurer enregistrement A `76.76.21.21` + CNAME `www`, puis mettre à jour `APP_BASE_URL` via `nanocorp vercel env set`.
+
 ## 2026-04-15 Exploration — Authentification magic link réelle
 
 ### État constaté avant implémentation
