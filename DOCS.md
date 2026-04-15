@@ -355,3 +355,59 @@ PageHush landing page replaced by BatiFlow — a cash flow preview tool for solo
 **Non modifié (intentionnel)**
 - Le beacon analytics `?s=pagehush` dans `app/layout.tsx` est l'identifiant plateforme NanoCorp — ne pas modifier
 - L'URL de déploiement `https://pagehush.nanocorp.app` est gérée par NanoCorp
+
+---
+
+## 2026-04-15 Exploration — Restauration landing `/` BatiFlow
+
+### Constat de départ
+- La route `/` ne rendait plus aucune page marketing : `app/page.tsx` appelait `getCurrentUser()` puis redirigeait soit vers `/tableau-de-bord`, soit vers `/connexion`.
+- La route `app/connexion/page.tsx` expose déjà l’entrée produit et ne devait pas être modifiée pour cette tâche.
+- Le thème global est déjà clair dans `app/globals.css`, avec polices IBM Plex et primitives visuelles réutilisables (`bg-site`, `card-surface`, `paper-grid`, `hero-glow`).
+- Les dépendances étaient définies mais `node_modules/` n’était plus présent localement au début de cette tranche ; `npm ci` a été relancé pour récupérer la doc Next embarquée et pouvoir valider le build.
+
+### Documentation Next consultée
+- `node_modules/next/dist/docs/01-app/01-getting-started/03-layouts-and-pages.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/04-linking-and-navigating.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/11-css.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/14-metadata-and-og-images.md`
+
+### Sources produit retrouvées
+- Les 3 messages d’accroche validés ont été récupérés depuis l’historique Git, commit `11079e3` (`Refonte la landing page BatiFlow`), car ils n’étaient plus présents dans l’arbre courant.
+
+---
+
+## 2026-04-15 Livraison — Landing marketing restaurée sur `/`
+
+### Ce qui a été changé
+- `app/page.tsx` a été entièrement réécrit pour remplacer la redirection serveur par une vraie landing page marketing claire.
+- La page respecte désormais les contraintes demandées :
+  - ton professionnel en français avec vouvoiement
+  - mobile-first
+  - thème clair uniquement
+  - structure stricte en 3 sections : `Le problème`, `La solution`, `Comment ça marche`
+  - CTA unique `Créer mon compte gratuitement` pointant vers `/connexion`
+- Les 3 accroches validées ont été réutilisées telles quelles dans les 3 sections principales.
+- Deux aperçus produit ont été intégrés dans la section solution :
+  - vue trésorerie 90 jours
+  - vue chantiers / paiements
+- Une metadata spécifique à la page d’accueil a été ajoutée directement dans `app/page.tsx`.
+
+### Ce qui n’a pas été modifié
+- `app/connexion/page.tsx`
+- les routes produit sous `app/(app)/...`
+- le thème global clair existant, en dehors de sa réutilisation par la landing
+
+### Validation effectuée
+- `npm ci` ✅
+- `npm run lint` ✅
+- `npm run build` ✅
+- Vérification locale avec `agent-browser` sur `http://127.0.0.1:3000` en viewport `iPhone 14` ✅
+  - la page `/` affiche bien les 3 blocs demandés : problème / solution / comment ça marche
+  - un seul lien CTA a été détecté : `Créer mon compte gratuitement`
+  - le rendu reste en thème clair
+- Vérification locale de `http://127.0.0.1:3000/connexion` ✅
+  - la page connexion existante charge toujours sans modification fonctionnelle visible
+
+### Note outillage
+- `agent-browser install` a été exécuté localement pour installer Chromium avant la vérification UI.
