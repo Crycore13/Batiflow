@@ -1,5 +1,20 @@
 # Project Docs
 
+## 2026-04-15 Messages de prospection WhatsApp/SMS — Artisans BTP
+
+3 messages cold outreach rédigés dans `docs/prospection-whatsapp-btp.md`.
+
+**3 angles testés :**
+- Angle 1 — Douleur paiement (client qui paye pas / en retard)
+- Angle 2 — Douleur comptable (découvrir trop tard qu'on est dans le rouge)
+- Angle 3 — Douleur survie (stress de pas savoir si on peut payer ses charges)
+
+**Format :** WhatsApp/SMS, max 5 lignes, accroche directe + pitch BatiFlow + question ouverte + lien liste d'attente optionnel.
+
+**KPI cible :** > 10 % de taux de réponse. Tester 30 contacts par angle, doubler sur le gagnant.
+
+---
+
 ## 2026-04-14 Analyse de Marché — DossierSubvention
 
 Analyse complète rédigée dans `docs/analyse-marche-dossiersubvention.md`.
