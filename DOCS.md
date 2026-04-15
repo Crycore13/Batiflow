@@ -39,6 +39,26 @@ Analyse complète rédigée dans `docs/analyse-marche-dossiersubvention.md`.
 
 ---
 
+## 2026-04-15 Audit Landing Page — Optimisation conversion
+
+### Points vérifiés
+
+1. **Lien Stripe** : Aucun lien Stripe dans `app/page.tsx` ✅ — la page n'affiche que la liste d'attente
+2. **Formulaire liste d'attente** : Testé end-to-end — API `/api/waitlist` répond `{"success":true}`, l'email est bien enregistré en DB ✅
+3. **SEO** :
+   - Titre corrigé : `BatiFlow — Tu sais jamais si t'as assez pour finir le mois ?` ✅
+   - `lang="fr"` sur le HTML ✅
+   - Meta description en français pour artisans BTP ✅
+4. **Mobile** : Testé à 390×844px (iPhone 14) — aucun dépassement horizontal, CTA visible sans scroll, formulaire fonctionnel ✅
+
+### Corrections effectuées
+
+- `app/layout.tsx` : titre mis à jour ("Tu sais jamais si t'as assez pour finir le mois ?"), OG/Twitter titles idem
+- `app/page.tsx` : correction d'un espace manquant après un `<strong>` dans le hero
+- Commit `9688f8e` · déployé sur Vercel (confirmé : browser affiche le nouveau titre)
+
+---
+
 ## 2026-04-14 BatiFlow Landing Page (waitlist)
 
 ### Pivot
