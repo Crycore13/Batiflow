@@ -205,7 +205,7 @@ export default function BatiFlowPage() {
         >
           <strong style={{ color: "white" }}>47% des factures BTP</strong> sont
           payées en retard.{" "}
-          <strong style={{ color: "white" }}>1 faillite sur 4</strong> en
+          <strong style={{ color: "white" }}>1 faillite sur 4</strong>{" "}en
           France, c&apos;est dans le bâtiment. T&apos;es pas seul — mais t&apos;as besoin de
           voir venir.
         </p>
