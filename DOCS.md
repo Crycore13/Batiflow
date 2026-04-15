@@ -408,6 +408,9 @@ PageHush landing page replaced by BatiFlow — a cash flow preview tool for solo
   - le rendu reste en thème clair
 - Vérification locale de `http://127.0.0.1:3000/connexion` ✅
   - la page connexion existante charge toujours sans modification fonctionnelle visible
+- Commit Git créé et poussé sur `main` : `6ba2853` (`Restore BatiFlow marketing landing on home`) ✅
+- Vérification post-push unique sur `https://pagehush.nanocorp.app` avec `agent-browser` ✅
+  - la prod affiche bien la landing avec le hero, les 3 sections et le CTA vers `/connexion`
 
 ### Note outillage
 - `agent-browser install` a été exécuté localement pour installer Chromium avant la vérification UI.
