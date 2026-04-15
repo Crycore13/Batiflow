@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import type { Viewport } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const bodyFont = IBM_Plex_Sans({
@@ -15,22 +17,32 @@ const displayFont = IBM_Plex_Sans_Condensed({
 });
 
 export const metadata: Metadata = {
-  title: "BatiFlow | Votre trésorerie BTP claire sur 90 jours",
+  title: "BatiFlow | Tableau de bord trésorerie artisans",
   description:
-    "BatiFlow centralise vos chantiers et vos paiements pour vous donner une vision claire à 90 jours, accessible en 2 minutes depuis votre téléphone.",
+    "BatiFlow centralise vos chantiers, vos acomptes et vos soldes pour vous donner une lecture de trésorerie claire sur 90 jours depuis votre téléphone.",
+  manifest: "/manifest.webmanifest",
   openGraph: {
-    title: "BatiFlow | Votre trésorerie BTP claire sur 90 jours",
+    title: "BatiFlow | Tableau de bord trésorerie artisans",
     description:
-      "Visualisez votre trésorerie sur 90 jours, suivez vos chantiers et recevez des alertes de retard depuis votre téléphone.",
+      "Suivez vos chantiers, vos acomptes et vos retards dans une interface mobile-first pensée pour les artisans.",
     type: "website",
     locale: "fr_FR",
   },
   twitter: {
     card: "summary_large_image",
-    title: "BatiFlow | Votre trésorerie BTP claire sur 90 jours",
+    title: "BatiFlow | Tableau de bord trésorerie artisans",
     description:
-      "Trésorerie 90 jours, suivi chantiers, alertes retard et magic link pour artisans du bâtiment.",
+      "Trésorerie 90 jours, suivi chantiers et alertes retard pour artisans du bâtiment.",
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "BatiFlow",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#d55b2d",
 };
 
 export default function RootLayout({
@@ -41,9 +53,10 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${bodyFont.variable} ${displayFont.variable}`}>
       <head>
-        <script
+        <Script
           src="https://phospho-nanocorp-prod--nanocorp-api-fastapi-app.modal.run/beacon/snippet.js?s=pagehush"
           defer
+          strategy="afterInteractive"
         />
       </head>
       <body className="min-h-full bg-[var(--bg)] text-[var(--ink)] antialiased">

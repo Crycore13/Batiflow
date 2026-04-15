@@ -9,6 +9,12 @@
   --muted: #5d6975;
   --accent: #d55b2d;
   --accent-dark: #8f3e22;
+  --success: #2f7d57;
+  --success-soft: #e7f3ec;
+  --warning: #cf7a2b;
+  --warning-soft: #f8ecde;
+  --danger: #ba4b37;
+  --danger-soft: #fae7e3;
 }
 
 html {
@@ -18,6 +24,7 @@ html {
 
 body {
   margin: 0;
+  min-height: 100vh;
   background:
     radial-gradient(circle at top left, rgba(240, 177, 130, 0.22), transparent 32%),
     radial-gradient(circle at 100% 0%, rgba(185, 202, 214, 0.32), transparent 28%),
@@ -33,6 +40,13 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 ::selection {
@@ -61,6 +75,16 @@ a {
     radial-gradient(circle at 15% 20%, rgba(213, 91, 45, 0.18), transparent 32%),
     radial-gradient(circle at 88% 18%, rgba(154, 180, 197, 0.28), transparent 30%);
   pointer-events: none;
+}
+
+.touch-target {
+  min-height: 44px;
+}
+
+.card-surface {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 20px 55px rgba(23, 33, 43, 0.08);
 }
 
 @media (prefers-reduced-motion: no-preference) {

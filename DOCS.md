@@ -1,5 +1,73 @@
 # Project Docs
 
+## 2026-04-15 Exploration — MVP app BatiFlow mobile-first
+
+### État constaté avant développement
+- Le dépôt contient déjà une application Next.js 16.2.3 App Router avec Tailwind v4, mais l’interface active est encore une landing marketing BatiFlow dans `app/page.tsx`.
+- Les dépendances étaient déclarées sans `node_modules/` initialement installés ; l’installation locale a été faite avant lecture de la documentation Next embarquée.
+- `DOCS.md` documente les tâches précédentes, dont une refonte landing claire ; il n’existe encore aucune route produit pour dashboard, chantiers, auth ou PWA.
+- La base disponible est PostgreSQL via `DATABASE_URL`; aucune variable `SUPABASE_*` ou `NEXT_PUBLIC_SUPABASE_*` n’est configurée localement.
+- Le CLI `nanocorp` expose bien un sous-ensemble `emails`, mais aucune configuration produit n’existe dans le dépôt pour brancher de façon fiable un vrai magic link e-mail côté application déployée.
+
+### Documentation Next consultée pour cette tranche
+- `node_modules/next/dist/docs/01-app/01-getting-started/03-layouts-and-pages.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/11-css.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/15-route-handlers.md`
+- `node_modules/next/dist/docs/01-app/02-guides/forms.md`
+- `node_modules/next/dist/docs/01-app/02-guides/progressive-web-apps.md`
+- `node_modules/next/dist/docs/01-app/02-guides/authentication.md`
+
+### Décision de scope
+- Pour tenir la fenêtre d’exécution, la première tranche livre l’application métier mobile-first persistée en base: dashboard trésorerie 90 jours, alertes retard, ajout/liste/édition de chantiers et base PWA.
+- L’authentification sera préparée via une entrée par e-mail simple, mais le vrai magic link e-mail reste une tâche distincte tant qu’un provider/runtime compatible n’est pas configuré dans le produit.
+
+## 2026-04-15 Livraison — MVP BatiFlow app mobile-first
+
+### Ce qui a été livré
+- La landing marketing de `app/page.tsx` a été remplacée par une application Next.js App Router orientée produit avec redirection vers `/connexion` ou `/tableau-de-bord` selon la session e-mail.
+- Une navigation produit mobile-first a été ajoutée avec routes dédiées :
+  - `/connexion`
+  - `/tableau-de-bord`
+  - `/chantiers`
+  - `/chantiers/nouveau`
+  - `/chantiers/[id]`
+- Une couche Postgres a été créée dans `lib/db.ts` et `lib/batiflow-data.ts` pour persister les utilisateurs et les chantiers.
+- Le schéma SQL reproductible a été ajouté dans `supabase/migrations/20260415_batiflow_mvp.sql` puis appliqué sur la base de production.
+- La logique métier partagée a été centralisée dans `lib/batiflow-shared.ts` :
+  - calcul acompte / solde
+  - statut chantier (encaissé / en attente / en retard)
+  - projection trésorerie
+  - timeline 90 jours
+  - alertes retard
+- Les actions serveur ont été ajoutées dans `app/actions.ts` pour :
+  - entrée par e-mail et cookie de session
+  - ajout de chantier
+  - mise à jour de chantier
+  - déconnexion
+- Le dashboard affiche désormais :
+  - bandeau rouge si retard actif
+  - solde prévisionnel en grand
+  - résumé encaissé / en attente / en retard
+  - timeline horizontale 90 jours scrollable
+  - cartes d’alerte retard
+- La liste chantiers affiche des cartes avec montant, solde restant, badge couleur et accès rapide à l’édition.
+- Le formulaire chantier calcule l’acompte automatiquement en euros côté client.
+- Une base PWA a été ajoutée via `app/manifest.ts`, metadata PWA dans `app/layout.tsx` et thème mobile clair conservé dans `app/globals.css`.
+
+### Validation effectuée
+- `psql "$DATABASE_URL" -f supabase/migrations/20260415_batiflow_mvp.sql` ✅
+- `npm run lint` ✅
+- `npm run build` ✅
+- Vérification locale mobile avec `agent-browser` sur `http://127.0.0.1:3000` ✅
+  - écran connexion chargé
+  - dashboard chargé avec cookie de session
+  - bandeau `Alerte retard` visible avec un chantier de démonstration
+  - route `/chantiers` chargée avec bouton `Modifier`
+  - aucune erreur navigateur remontée par `agent-browser errors`
+
+### Limite connue
+- Cette tranche n’implémente pas encore un vrai magic link e-mail envoyé et consommé via provider externe. La session actuelle repose sur une entrée e-mail simple stockée en cookie pour débloquer l’usage du MVP métier.
+
 ## 2026-04-15 Stratégie acquisition J3-J7 — Top 5 canaux artisans BTP solo
 
 Stratégie complète rédigée dans `docs/strategie-acquisition-j3-j7.md`.
