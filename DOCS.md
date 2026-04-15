@@ -1,5 +1,29 @@
 # Project Docs
 
+## 2026-04-15 Stratégie acquisition J3-J7 — Top 5 canaux artisans BTP solo
+
+Stratégie complète rédigée dans `docs/strategie-acquisition-j3-j7.md`.
+
+**Top 5 canaux classés par ROI :**
+1. 🥇 Groupes Facebook BTP (effort 2/5, potentiel 5/5) — 150k+ membres accessibles
+2. 🥈 WhatsApp cold outreach (effort 2/5, potentiel 4/5) — contacts Pages Jaunes + Leboncoin
+3. 🥉 Instagram DMs artisans (effort 3/5, potentiel 4/5) — micro-influenceurs BTP
+4. LinkedIn (effort 3/5, potentiel 3/5) — artisans digitalisés, audience plus qualifiée
+5. Experts-comptables BTP prescripteurs (effort 4/5, potentiel 4/5) — canal evergreen lent
+
+**Plan J3-J7 :**
+- J3 : Lancement Facebook (3 groupes) + setup Instagram/LinkedIn + début WhatsApp scraping
+- J4 : 40 WhatsApp + 30 DMs Instagram + 3 groupes FB + 15 emails experts-comptables
+- J5 : 40 WhatsApp + Reels Instagram + 15 emails EC + post LinkedIn storytelling
+- J6 : Relances + 30 DMs Instagram supplémentaires + social proof posts
+- J7 : Sprint final relances ciblées → objectif 50 inscrits
+
+**Templates inclus :** 3 posts Facebook, 2 messages WhatsApp, 1 relance, 1 DM Instagram, 1 post Instagram + caption, 1 post LinkedIn, 1 email expert-comptable.
+
+**Projection :** 41-61 inscrits en 5 jours si exécution correcte sur FB + WhatsApp + Instagram.
+
+---
+
 ## 2026-04-15 Messages de prospection WhatsApp/SMS — Artisans BTP
 
 3 messages cold outreach rédigés dans `docs/prospection-whatsapp-btp.md`.
