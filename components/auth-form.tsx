@@ -16,7 +16,7 @@ export function AuthForm() {
           Connexion e-mail
         </p>
         <h2 className="font-[family:var(--font-display)] text-[1.9rem] uppercase leading-none text-[var(--ink)]">
-          Entrez dans votre espace.
+          Recevez votre lien magique.
         </h2>
       </div>
 
@@ -39,9 +39,15 @@ export function AuthForm() {
           </p>
         ) : null}
 
+        {state.success ? (
+          <p className="rounded-[1.2rem] bg-[color:rgba(42,122,70,0.12)] px-4 py-3 text-sm text-[var(--success)]">
+            {state.success}
+          </p>
+        ) : null}
+
         <SubmitButton
-          label="Accéder à mon tableau de bord"
-          pendingLabel="Connexion en cours..."
+          label="Envoyer mon lien magique"
+          pendingLabel="Envoi du lien..."
           className="bg-[var(--accent)]"
         />
       </form>

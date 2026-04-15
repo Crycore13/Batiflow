@@ -1,19 +1,22 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { sendMagicLinkEmail } from "@/lib/email";
 import type { StatutAcompte, StatutSolde } from "@/lib/batiflow-shared";
 import {
   createChantier,
+  createMagicLink,
   getCurrentUser,
+  revokeCurrentSession,
   sessionCookieName,
   updateChantier,
-  upsertUserByEmail,
 } from "@/lib/batiflow-data";
 
 export type ActionState = {
   error?: string;
+  success?: string;
 };
 
 const VALID_ACOMPTE_STATUS: StatutAcompte[] = ["paye", "non_paye"];
@@ -28,6 +31,28 @@ function normalizeEmail(value: FormDataEntryValue | null) {
 function parseNumber(value: FormDataEntryValue | null) {
   const amount = Number(String(value ?? "").replace(",", "."));
   return Number.isFinite(amount) ? amount : NaN;
+}
+
+async function getAppBaseUrl() {
+  const headerStore = await headers();
+  const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host");
+
+  if (host) {
+    const protocol =
+      headerStore.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https");
+
+    return `${protocol}://${host}`;
+  }
+
+  const configuredBaseUrl =
+    process.env.APP_BASE_URL ??
+    process.env.NEXT_PUBLIC_APP_URL ??
+    process.env.VERCEL_PROJECT_URL ??
+    "http://localhost:3000";
+
+  return configuredBaseUrl.startsWith("http")
+    ? configuredBaseUrl
+    : `https://${configuredBaseUrl}`;
 }
 
 function parseChantierForm(formData: FormData) {
@@ -90,20 +115,32 @@ export async function continuerAvecEmail(
     return { error: "Veuillez saisir une adresse e-mail valide." };
   }
 
-  await upsertUserByEmail(email);
+  try {
+    const { token } = await createMagicLink(email);
+    const baseUrl = await getAppBaseUrl();
+    const magicLinkUrl = new URL("/api/auth/magic-link", baseUrl);
+    magicLinkUrl.searchParams.set("token", token);
 
-  const cookieStore = await cookies();
-  cookieStore.set(sessionCookieName, email, {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 30,
-  });
+    await sendMagicLinkEmail({
+      email,
+      magicLinkUrl: magicLinkUrl.toString(),
+    });
 
-  redirect("/tableau-de-bord");
+    return {
+      success:
+        "Votre lien magique a été envoyé. Ouvrez votre e-mail puis cliquez sur le lien pour accéder au tableau de bord.",
+    };
+  } catch (error) {
+    console.error("Impossible d'envoyer le magic link", error);
+    return {
+      error:
+        "L’envoi du lien magique a échoué. Vérifiez la configuration e-mail puis réessayez.",
+    };
+  }
 }
 
 export async function seDeconnecter() {
+  await revokeCurrentSession();
   const cookieStore = await cookies();
   cookieStore.delete(sessionCookieName);
   redirect("/connexion");

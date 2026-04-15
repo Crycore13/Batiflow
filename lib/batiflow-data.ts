@@ -1,12 +1,25 @@
+import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
-import { query } from "@/lib/db";
+import { query, withTransaction } from "@/lib/db";
 import type { Chantier, StatutAcompte, StatutSolde } from "@/lib/batiflow-shared";
 
-export const sessionCookieName = "batiflow_email";
+export const sessionCookieName = "batiflow_session";
+
+const MAGIC_LINK_TTL_MINUTES = 20;
+const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
 
 type UserRow = {
   id: string;
   email: string;
+};
+
+type MagicLinkRow = {
+  email: string;
+  expires_at: string;
+  id: string;
+  redirect_to: string;
+  used_at: string | null;
+  user_id: string;
 };
 
 type ChantierRow = {
@@ -45,7 +58,33 @@ function mapChantier(row: ChantierRow): Chantier {
   };
 }
 
-export async function getSessionEmail() {
+function createOpaqueToken() {
+  return randomBytes(32).toString("base64url");
+}
+
+function hashToken(token: string) {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+function normalizePath(pathname: string | null | undefined) {
+  if (!pathname?.startsWith("/")) {
+    return "/tableau-de-bord";
+  }
+
+  return pathname;
+}
+
+export function getSessionCookieOptions() {
+  return {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    path: "/",
+    maxAge: SESSION_TTL_SECONDS,
+    secure: process.env.NODE_ENV === "production",
+  };
+}
+
+export async function getSessionToken() {
   const cookieStore = await cookies();
   return cookieStore.get(sessionCookieName)?.value ?? null;
 }
@@ -67,23 +106,139 @@ export async function upsertUserByEmail(email: string) {
 }
 
 export async function getCurrentUser() {
-  const email = await getSessionEmail();
+  const sessionToken = await getSessionToken();
 
-  if (!email) {
+  if (!sessionToken) {
     return null;
   }
 
   const result = await query<UserRow>(
     `
-      select id::text, email
-      from users
-      where email = $1
+      select u.id::text, u.email
+      from auth_sessions session
+      inner join users u on u.id = session.user_id
+      where session.session_token_hash = $1
+        and session.revoked_at is null
+        and session.expires_at > now()
       limit 1
     `,
-    [email],
+    [hashToken(sessionToken)],
   );
 
   return result.rows[0] ?? null;
+}
+
+export async function createMagicLink(email: string, redirectTo = "/tableau-de-bord") {
+  const user = await upsertUserByEmail(email);
+  const token = createOpaqueToken();
+
+  await query(
+    `
+      delete from auth_magic_links
+      where user_id = $1 and used_at is null
+    `,
+    [user.id],
+  );
+
+  await query(
+    `
+      insert into auth_magic_links (user_id, email, token_hash, redirect_to, expires_at)
+      values ($1, $2, $3, $4, now() + make_interval(mins => $5))
+    `,
+    [user.id, user.email, hashToken(token), normalizePath(redirectTo), MAGIC_LINK_TTL_MINUTES],
+  );
+
+  return {
+    email: user.email,
+    token,
+  };
+}
+
+export async function consumeMagicLink(token: string) {
+  const tokenHash = hashToken(token);
+  const lookup = await query<MagicLinkRow>(
+    `
+      select
+        id::text,
+        user_id::text,
+        email,
+        redirect_to,
+        expires_at::text,
+        used_at::text
+      from auth_magic_links
+      where token_hash = $1
+      limit 1
+    `,
+    [tokenHash],
+  );
+
+  const magicLink = lookup.rows[0];
+
+  if (!magicLink) {
+    return { status: "invalid" as const };
+  }
+
+  if (magicLink.used_at) {
+    return { status: "used" as const };
+  }
+
+  if (new Date(magicLink.expires_at).getTime() <= Date.now()) {
+    return { status: "expired" as const };
+  }
+
+  return withTransaction(async (client) => {
+    const consumed = await client.query<Pick<MagicLinkRow, "redirect_to" | "user_id">>(
+      `
+        update auth_magic_links
+        set used_at = now()
+        where id = $1
+          and used_at is null
+          and expires_at > now()
+        returning redirect_to, user_id::text
+      `,
+      [magicLink.id],
+    );
+
+    const row = consumed.rows[0];
+
+    if (!row) {
+      return { status: "used" as const };
+    }
+
+    const sessionToken = createOpaqueToken();
+
+    await client.query(
+      `
+        insert into auth_sessions (user_id, session_token_hash, expires_at)
+        values ($1, $2, now() + make_interval(secs => $3))
+      `,
+      [row.user_id, hashToken(sessionToken), SESSION_TTL_SECONDS],
+    );
+
+    return {
+      status: "consumed" as const,
+      redirectTo: normalizePath(row.redirect_to),
+      sessionToken,
+    };
+  });
+}
+
+export async function revokeCurrentSession() {
+  const sessionToken = await getSessionToken();
+
+  if (!sessionToken) {
+    return;
+  }
+
+  await query(
+    `
+      update auth_sessions
+      set revoked_at = now()
+      where session_token_hash = $1
+        and revoked_at is null
+    `,
+    [hashToken(sessionToken)],
+  );
 }
 
 export async function listChantiersByUser(userId: string) {

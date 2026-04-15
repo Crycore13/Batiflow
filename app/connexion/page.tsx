@@ -8,12 +8,32 @@ const benefits = [
   "Suivi chantier simple sans mot de passe",
 ];
 
-export default async function ConnexionPage() {
+type ConnexionPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function ConnexionPage({ searchParams }: ConnexionPageProps) {
   const user = await getCurrentUser();
 
   if (user) {
     redirect("/tableau-de-bord");
   }
+
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const magicLinkState =
+    typeof resolvedSearchParams?.magicLink === "string"
+      ? resolvedSearchParams.magicLink
+      : undefined;
+  const magicLinkNotice =
+    magicLinkState === "expired"
+      ? "Ce lien magique a expiré. Demandez-en un nouveau."
+      : magicLinkState === "used"
+        ? "Ce lien magique a déjà été utilisé. Demandez-en un nouveau."
+        : magicLinkState === "missing"
+          ? "Le lien de connexion est incomplet."
+          : magicLinkState === "invalid"
+            ? "Ce lien magique est invalide."
+            : null;
 
   return (
     <main className="bg-site min-h-screen px-4 py-6 text-[var(--ink)] sm:px-6">
@@ -45,6 +65,12 @@ export default async function ConnexionPage() {
         </section>
 
         <section className="space-y-4">
+          {magicLinkNotice ? (
+            <p className="rounded-[1.6rem] bg-[var(--danger-soft)] px-4 py-4 text-sm text-[var(--danger)]">
+              {magicLinkNotice}
+            </p>
+          ) : null}
+
           <AuthForm />
 
           <div className="grid gap-3">

@@ -1,5 +1,58 @@
 # Project Docs
 
+## 2026-04-15 Exploration — Authentification magic link réelle
+
+### État constaté avant implémentation
+- Le projet expose déjà `app/connexion/page.tsx`, `app/actions.ts`, `app/(app)/layout.tsx` et `lib/batiflow-data.ts` pour une pseudo-authentification basée sur un cookie contenant directement l’adresse e-mail.
+- `continuerAvecEmail` crée ou met à jour l’utilisateur puis écrit le cookie `sessionCookieName` avec la valeur brute de l’e-mail, sans lien magique, sans token à durée limitée et sans session serveur persistée.
+- Les routes applicatives (`/tableau-de-bord`, `/chantiers`) sont protégées uniquement par `getCurrentUser()` qui relit ce cookie e-mail.
+- `package.json` ne déclare encore aucun provider e-mail (`resend`, `nodemailer`) ni librairie d’authentification prête à l’emploi.
+- `node_modules/` est absent dans l’environnement courant au moment de l’exploration ; il faut donc installer les dépendances pour lire la documentation Next 16 embarquée demandée dans `AGENTS.md` et pour exécuter lint/build.
+
+### Documentation Next consultée pour cette tranche
+- `node_modules/next/dist/docs/01-app/02-guides/authentication.md`
+- `node_modules/next/dist/docs/01-app/02-guides/forms.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/15-route-handlers.md`
+- `node_modules/next/dist/docs/01-app/03-api-reference/04-functions/cookies.md`
+
+### Infra e-mail réellement disponible
+- Aucun `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `SMTP_HOST`, `SMTP_USER` ou `SMTP_PASS` n’est configuré localement ni dans `nanocorp vercel env list`.
+- `nanocorp emails` fonctionne pour la société `pagehush@nanocorp.app` et s’appuie sur un backend HTTP NanoCorp authentifié.
+- L’API NanoCorp sous-jacente répond sur `https://phospho-nanocorp-prod--nanocorp-api-fastapi-app.modal.run/internal/tools/send_email/execute` avec un bearer token interne ; elle peut donc servir de fallback tant qu’une clé Resend dédiée n’est pas provisionnée.
+
+## 2026-04-15 Livraison — Vraie authentification par magic link
+
+### Ce qui a été livré
+- Le cookie de pseudo-session `batiflow_email` a été remplacé par une vraie session opaque `batiflow_session`, stockée en cookie HTTP-only et validée côté base.
+- Une persistance auth dédiée a été ajoutée via `supabase/migrations/20260415_batiflow_magic_link_auth.sql` :
+  - table `auth_magic_links`
+  - table `auth_sessions`
+- `lib/batiflow-data.ts` gère désormais :
+  - génération d’un token magique aléatoire hashé en base
+  - consommation à usage unique du lien avec expiration 20 minutes
+  - création / révocation de session persistée 30 jours
+  - résolution du `currentUser` à partir du token de session et non plus de l’e-mail brut
+- `lib/email.ts` ajoute un transport e-mail avec priorité Resend (`RESEND_API_KEY`) et fallback NanoCorp (`NANOCORP_EMAILS_API_URL` + `NANOCORP_EMAILS_TOKEN`, ou valeurs d’environnement NanoCorp déjà présentes en local).
+- `app/actions.ts` envoie maintenant un vrai e-mail magic link au lieu de connecter immédiatement l’utilisateur.
+- `app/api/auth/magic-link/route.ts` consomme le token, pose le cookie de session et redirige vers `/tableau-de-bord`.
+- `app/connexion/page.tsx` et `components/auth-form.tsx` affichent désormais un message de succès après envoi et des erreurs claires si le lien est invalide, expiré ou déjà utilisé.
+- Le lien magique se base sur l’hôte réel de la requête pour fonctionner correctement en dev, preview et production.
+- Les variables Vercel `APP_BASE_URL`, `NANOCORP_EMAILS_API_URL` et `NANOCORP_EMAILS_TOKEN` ont été ajoutées pour rendre l’envoi e-mail opérationnel en production sans attendre la clé Resend.
+
+### Validation effectuée
+- `psql "$DATABASE_URL" -f supabase/migrations/20260415_batiflow_magic_link_auth.sql` ✅
+- `npm run lint` ✅
+- `npm run build` ✅
+- QA locale avec `agent-browser` sur `http://localhost:3000` ✅
+  - saisie de `pagehush@nanocorp.app` sur `/connexion`
+  - message de succès affiché après soumission
+  - e-mail `Votre lien de connexion BatiFlow` reçu dans NanoCorp
+  - clic du lien magique confirmé par ouverture de `http://localhost:3000/tableau-de-bord`
+  - dashboard chargé avec session utilisateur visible (`pagehush@nanocorp.app`)
+
+### Limite restante connue
+- Aucune clé Resend dédiée n’est encore configurée sur Vercel ; la production repose donc actuellement sur le fallback NanoCorp, même si le code bascule automatiquement sur Resend dès qu’une clé est ajoutée.
+
 ## 2026-04-15 Exploration — MVP app BatiFlow mobile-first
 
 ### État constaté avant développement
