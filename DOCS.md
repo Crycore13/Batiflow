@@ -414,3 +414,20 @@ PageHush landing page replaced by BatiFlow — a cash flow preview tool for solo
 
 ### Note outillage
 - `agent-browser install` a été exécuté localement pour installer Chromium avant la vérification UI.
+
+---
+
+## 2026-04-15 Exploration — Enrichissement `prospects-artisans.csv`
+
+### Fichier et objectif
+- Le fichier source est `prospects-artisans.csv` avec 55 contacts et les colonnes `email` et `site_web` vides.
+- La tâche demandée consiste à enrichir chaque ligne avec `site_web`, `email` et `SIREN` à partir de sources publiques, sans contacter les prospects.
+
+### Blocages constatés
+- Les recherches via `WebSearch` ont échoué côté outil avant exécution exploitable.
+- Les essais de récupération directe sur `societe.com` via `WebFetch` ont retourné des erreurs 500.
+- Les annuaires visés (ex. PagesJaunes) ne sont pas facilement exploitables depuis cet environnement via fetch automatisé.
+
+### Impact
+- Aucun enrichissement fiable n’a pu être validé automatiquement dans cette tranche sans risquer d’inventer ou de mal attribuer des données.
+- Le CSV est resté inchangé pour préserver la qualité des données.
