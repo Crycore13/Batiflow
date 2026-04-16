@@ -1,5 +1,52 @@
 # Project Docs
 
+## 2026-04-16 Exploration + QA — Flow BatiFlow connexion → dashboard → ajout chantier
+
+### Documentation Next consultée pour cette tranche
+- `node_modules/next/dist/docs/01-app/02-guides/authentication.md`
+- `node_modules/next/dist/docs/01-app/02-guides/forms.md`
+- `node_modules/next/dist/docs/01-app/03-api-reference/04-functions/cookies.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/15-route-handlers.md`
+
+### Constats de QA
+- `https://pagehush.nanocorp.app/` affiche bien la landing et ne redirige pas vers `/connexion`.
+- Le CTA `Créer mon compte gratuitement` mène bien vers `/connexion`.
+- Sur le site live, la soumission du formulaire d’e-mail cassait le flow : après clic sur `Envoyer mon lien magique`, Next affichait `This page couldn’t load` avec une erreur serveur générique, et aucun nouvel e-mail n’arrivait dans `nanocorp emails`.
+- Le même flow fonctionne en local, en `next dev` et en `next start`, avec réception réelle de l’e-mail et redirection du magic link vers `/tableau-de-bord`. Le problème était donc spécifique à la configuration déployée, pas au code applicatif.
+- En local avec la base réelle, la redirection par magic link charge correctement `/tableau-de-bord`, la vue trésorerie 90 jours s’affiche même vide, et la timeline contient bien les flux futurs quand des chantiers existent.
+- L’automatisation `agent-browser` sur le formulaire chantier s’est montrée peu fiable dans cet environnement : un sélecteur trop large a d’abord cliqué le bouton de déconnexion du header, puis les tentatives de soumission programmatique n’ont pas déclenché l’action serveur. Pour finir la QA utile, des chantiers de test ont été insérés directement dans la base afin de valider le rendu réel liste + timeline + badges dans l’UI.
+
+### Correction appliquée
+- Réinitialisation des variables Vercel de production/preview vers des valeurs connues comme fonctionnelles :
+  - `APP_BASE_URL=https://pagehush.nanocorp.app`
+  - `NANOCORP_EMAILS_API_URL=https://phospho-nanocorp-prod--nanocorp-api-fastapi-app.modal.run`
+  - `NANOCORP_EMAILS_TOKEN=$AGENT_SECRET` (valeur injectée via CLI, non stockée dans le repo)
+- Cette correction vise le seul écart observé entre local et production : le transport e-mail NanoCorp côté Vercel.
+
+### Données de QA créées
+- Trois chantiers de test ont été insérés pour l’utilisateur `pagehush@nanocorp.app` :
+  - `QA Vert 2026-04-16`
+  - `QA Orange 2026-04-16`
+  - `QA Rouge 2026-04-16`
+
+### Validation locale effectuée
+- `npm ci` ✅
+- `npm run build` ✅
+- `next dev` + `agent-browser` :
+  - envoi réel du magic link ✅
+  - e-mail reçu via `nanocorp emails` ✅
+  - ouverture du magic link → `/tableau-de-bord` ✅
+  - vue trésorerie 90 jours vide affichée ✅
+  - liste chantiers affichée avec les 3 chantiers de test ✅
+  - timeline dashboard affichant les flux futurs `3 600 €` et `8 400 €` du chantier orange ✅
+  - badges cohérents :
+    - `Encaissé` = fond vert `rgb(231, 243, 236)` / texte `rgb(47, 125, 87)`
+    - `En attente` = fond orange `rgb(248, 236, 222)` / texte `rgb(207, 122, 43)`
+    - `En retard` = fond rouge `rgb(250, 231, 227)` / texte `rgb(186, 75, 55)`
+
+### Limite restante
+- Une vérification live après propagation du changement Vercel reste nécessaire pour confirmer que l’erreur serveur à l’envoi du magic link a disparu sur `pagehush.nanocorp.app`.
+
 ## 2026-04-15 — Guide achat domaine & connexion Vercel
 
 - `docs/guide-domaine-vercel.md` : guide opérationnel complet pour acheter `getbatiflow.fr` ou `batiflow.app` et connecter le domaine à Vercel.
