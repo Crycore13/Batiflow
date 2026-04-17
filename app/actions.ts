@@ -34,6 +34,22 @@ function parseNumber(value: FormDataEntryValue | null) {
 }
 
 async function getAppBaseUrl() {
+  const configuredBaseUrl =
+    process.env.APP_BASE_URL ??
+    process.env.NEXT_PUBLIC_APP_URL ??
+    process.env.VERCEL_PROJECT_URL ??
+    "http://localhost:3000";
+  const normalizedConfiguredBaseUrl = configuredBaseUrl.trim();
+
+  if (
+    normalizedConfiguredBaseUrl &&
+    normalizedConfiguredBaseUrl !== "http://localhost:3000"
+  ) {
+    return normalizedConfiguredBaseUrl.startsWith("http")
+      ? normalizedConfiguredBaseUrl
+      : `https://${normalizedConfiguredBaseUrl}`;
+  }
+
   const headerStore = await headers();
   const host = headerStore.get("x-forwarded-host") ?? headerStore.get("host");
 
@@ -44,15 +60,7 @@ async function getAppBaseUrl() {
     return `${protocol}://${host}`;
   }
 
-  const configuredBaseUrl =
-    process.env.APP_BASE_URL ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    process.env.VERCEL_PROJECT_URL ??
-    "http://localhost:3000";
-
-  return configuredBaseUrl.startsWith("http")
-    ? configuredBaseUrl
-    : `https://${configuredBaseUrl}`;
+  return normalizedConfiguredBaseUrl || "http://localhost:3000";
 }
 
 function parseChantierForm(formData: FormData) {

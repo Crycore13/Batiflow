@@ -1,5 +1,22 @@
 # Project Docs
 
+## 2026-04-17 Exploration + Fix — magic link prod en 127.0.0.1
+
+### Documentation Next consultée pour cette tranche
+- `node_modules/next/dist/docs/01-app/02-guides/authentication.md`
+- `node_modules/next/dist/docs/01-app/02-guides/forms.md`
+- `node_modules/next/dist/docs/01-app/03-api-reference/04-functions/headers.md`
+
+### Constats
+- `app/actions.ts` construisait l’URL du magic link en donnant la priorité à `x-forwarded-host` / `host` avant `APP_BASE_URL`.
+- Cette priorité rend la génération fragile en production: une server action derrière l’infra Vercel peut voir un host interne, ce qui explique un lien sortant en `http://127.0.0.1:3000/...` même si `APP_BASE_URL` existe côté projet.
+- `nanocorp vercel env list` confirme que `APP_BASE_URL`, `NANOCORP_EMAILS_API_URL` et `NANOCORP_EMAILS_TOKEN` sont bien déclarées sur le projet Vercel, mais la commande ne retourne pas leurs valeurs.
+
+### Correction appliquée
+- `app/actions.ts` privilégie désormais explicitement `APP_BASE_URL` / `NEXT_PUBLIC_APP_URL` / `VERCEL_PROJECT_URL` avant de relire les headers de requête.
+- Le fallback sur les headers est conservé uniquement pour les environnements sans URL configurée, ce qui préserve le dev local tout en stabilisant la prod.
+- Les envs Vercel `APP_BASE_URL`, `NANOCORP_EMAILS_API_URL` et `NANOCORP_EMAILS_TOKEN` ont été réappliquées via `nanocorp vercel env set` avec les valeurs de production attendues.
+
 ## 2026-04-16 Exploration + QA — Flow BatiFlow connexion → dashboard → ajout chantier
 
 ### Documentation Next consultée pour cette tranche
