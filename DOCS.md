@@ -17,6 +17,18 @@
 - Le fallback sur les headers est conservé uniquement pour les environnements sans URL configurée, ce qui préserve le dev local tout en stabilisant la prod.
 - Les envs Vercel `APP_BASE_URL`, `NANOCORP_EMAILS_API_URL` et `NANOCORP_EMAILS_TOKEN` ont été réappliquées via `nanocorp vercel env set` avec les valeurs de production attendues.
 
+### Validation effectuée
+- `npm run lint` ✅
+- `npm run build` ✅
+- commit/push `2d673ca` sur `main` ✅
+- vérification de production après 90 secondes sur `https://pagehush.nanocorp.app/connexion` :
+  - le formulaire s’affiche ✅
+  - la soumission sur `pagehush@nanocorp.app` bascule sur `This page couldn’t load` ❌
+  - aucun nouvel e-mail magic link n’apparaît dans `nanocorp emails list --direction outbound --limit 5` ❌
+
+### Point restant observé
+- Le correctif de construction d’URL est livré, mais la vérification E2E production n’est pas encore validée: au moment du contrôle unique imposé par la tâche, l’envoi du formulaire retournait encore une erreur serveur générique côté site live.
+
 ## 2026-04-16 Exploration + QA — Flow BatiFlow connexion → dashboard → ajout chantier
 
 ### Documentation Next consultée pour cette tranche
