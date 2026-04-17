@@ -16,7 +16,7 @@ export default async function ConnexionPage({ searchParams }: ConnexionPageProps
   const user = await getCurrentUser();
 
   if (user) {
-    redirect("/tableau-de-bord");
+    redirect(user.subscriptionStatus === "pro" ? "/tableau-de-bord" : "/abonnement");
   }
 
   const resolvedSearchParams = searchParams ? await searchParams : undefined;

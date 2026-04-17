@@ -4,11 +4,11 @@ import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { sendMagicLinkEmail } from "@/lib/email";
+import { requireProUser } from "@/lib/access";
 import type { StatutAcompte, StatutSolde } from "@/lib/batiflow-shared";
 import {
   createChantier,
   createMagicLink,
-  getCurrentUser,
   revokeCurrentSession,
   sessionCookieName,
   updateChantier,
@@ -158,11 +158,7 @@ export async function ajouterChantier(
   _previousState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const currentUser = await getCurrentUser();
-
-  if (!currentUser) {
-    redirect("/connexion");
-  }
+  const currentUser = await requireProUser();
 
   const parsed = parseChantierForm(formData);
   if ("error" in parsed) {
@@ -180,11 +176,7 @@ export async function modifierChantier(
   _previousState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const currentUser = await getCurrentUser();
-
-  if (!currentUser) {
-    redirect("/connexion");
-  }
+  const currentUser = await requireProUser();
 
   const parsed = parseChantierForm(formData);
   if ("error" in parsed) {

@@ -8,9 +8,18 @@ export const sessionCookieName = "batiflow_session";
 const MAGIC_LINK_TTL_MINUTES = 20;
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30;
 
+export type SubscriptionStatus = "free" | "pro";
+
 type UserRow = {
   id: string;
   email: string;
+  subscription_status: SubscriptionStatus;
+};
+
+export type CurrentUser = {
+  id: string;
+  email: string;
+  subscriptionStatus: SubscriptionStatus;
 };
 
 type MagicLinkRow = {
@@ -44,6 +53,14 @@ type ChantierInput = {
   statutSolde: StatutSolde;
 };
 
+function mapUser(row: UserRow): CurrentUser {
+  return {
+    id: row.id,
+    email: row.email,
+    subscriptionStatus: row.subscription_status,
+  };
+}
+
 function mapChantier(row: ChantierRow): Chantier {
   return {
     id: row.id,
@@ -64,6 +81,10 @@ function createOpaqueToken() {
 
 function hashToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
+}
+
+function normalizeEmailAddress(email: string) {
+  return email.trim().toLowerCase();
 }
 
 function normalizePath(pathname: string | null | undefined) {
@@ -90,19 +111,25 @@ export async function getSessionToken() {
 }
 
 export async function upsertUserByEmail(email: string) {
-  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedEmail = normalizeEmailAddress(email);
 
   const result = await query<UserRow>(
     `
       insert into users (email)
       values ($1)
       on conflict (email) do update set email = excluded.email
-      returning id::text, email
+      returning id::text, email, subscription_status
     `,
     [normalizedEmail],
   );
 
-  return result.rows[0];
+  const user = result.rows[0];
+
+  if (!user) {
+    throw new Error("Impossible de créer ou retrouver l’utilisateur.");
+  }
+
+  return mapUser(user);
 }
 
 export async function getCurrentUser() {
@@ -114,7 +141,7 @@ export async function getCurrentUser() {
 
   const result = await query<UserRow>(
     `
-      select u.id::text, u.email
+      select u.id::text, u.email, u.subscription_status
       from auth_sessions session
       inner join users u on u.id = session.user_id
       where session.session_token_hash = $1
@@ -125,7 +152,52 @@ export async function getCurrentUser() {
     [hashToken(sessionToken)],
   );
 
-  return result.rows[0] ?? null;
+  return result.rows[0] ? mapUser(result.rows[0]) : null;
+}
+
+export async function upsertSubscriptionStatusByEmail(
+  email: string,
+  subscriptionStatus: SubscriptionStatus,
+) {
+  const normalizedEmail = normalizeEmailAddress(email);
+  const result = await query<UserRow>(
+    `
+      insert into users (email, subscription_status)
+      values ($1, $2)
+      on conflict (email) do update
+      set
+        email = excluded.email,
+        subscription_status = excluded.subscription_status
+      returning id::text, email, subscription_status
+    `,
+    [normalizedEmail, subscriptionStatus],
+  );
+
+  const user = result.rows[0];
+
+  if (!user) {
+    throw new Error("Impossible de mettre à jour l’abonnement utilisateur.");
+  }
+
+  return mapUser(user);
+}
+
+export async function setSubscriptionStatusByEmail(
+  email: string,
+  subscriptionStatus: SubscriptionStatus,
+) {
+  const normalizedEmail = normalizeEmailAddress(email);
+  const result = await query<UserRow>(
+    `
+      update users
+      set subscription_status = $2
+      where email = $1
+      returning id::text, email, subscription_status
+    `,
+    [normalizedEmail, subscriptionStatus],
+  );
+
+  return result.rows[0] ? mapUser(result.rows[0]) : null;
 }
 
 export async function createMagicLink(email: string, redirectTo = "/tableau-de-bord") {

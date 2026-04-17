@@ -1,5 +1,65 @@
 # Project Docs
 
+## 2026-04-17 Livraison — Paywall Stripe / BatiFlow Pro
+
+### Documentation Next consultée pour cette tranche
+- `node_modules/next/dist/docs/01-app/02-guides/authentication.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/15-route-handlers.md`
+- `node_modules/next/dist/docs/01-app/02-guides/redirecting.md`
+- `node_modules/next/dist/docs/01-app/03-api-reference/04-functions/cookies.md`
+
+### Constats
+- Le projet disposait déjà d’une authentification magic link réellement persistée (`auth_magic_links`, `auth_sessions`) et d’un groupe applicatif `(app)` pour `/tableau-de-bord` et `/chantiers`.
+- Aucun statut d’abonnement n’existait encore côté base ni côté application ; une fois connecté, tout utilisateur accédait au dashboard sans filtre.
+- L’environnement NanoCorp expose le lien de paiement Stripe existant via `nanocorp payments link`, ainsi qu’un webhook forwardé automatiquement vers `app/api/webhooks/nanocorp/route.ts`.
+- Le brief mentionne `/api/stripe/webhook`, mais dans cet environnement le point d’entrée réellement appelé par la plateforme est `app/api/webhooks/nanocorp/route.ts`. Un alias `/api/stripe/webhook` a donc été ajouté pour rester compatible avec le brief et avec d’éventuels appels manuels.
+
+### Ce qui a été livré
+- Migration `supabase/migrations/20260417_batiflow_subscription_paywall.sql` :
+  - ajout de `users.subscription_status` avec valeurs `free` / `pro`
+  - index `users_subscription_status_idx`
+- `lib/batiflow-data.ts` retourne maintenant `subscriptionStatus` dans la session courante et expose :
+  - `upsertSubscriptionStatusByEmail()`
+  - `setSubscriptionStatusByEmail()`
+- `lib/access.ts` centralise :
+  - `requireUser()` pour les pages connectées
+  - `requireProUser()` pour les routes et server actions paywallées
+- Paywall produit livré :
+  - `app/abonnement/page.tsx`
+  - CTA Stripe à `14,90€/mois`
+  - instruction explicite d’utiliser la même adresse e-mail que le compte BatiFlow
+- Page post-paiement livrée :
+  - `app/checkout/success/page.tsx`
+  - redirection automatique vers `/tableau-de-bord` si le webhook a déjà activé le compte
+- Protection d’accès appliquée :
+  - `app/(app)/layout.tsx` redirige les utilisateurs `free` vers `/abonnement`
+  - `app/connexion/page.tsx` redirige un utilisateur déjà connecté vers `/tableau-de-bord` s’il est `pro`, sinon vers `/abonnement`
+  - `app/actions.ts` bloque aussi les server actions d’ajout/modification de chantier pour les comptes `free`
+- Webhooks livrés :
+  - `app/api/webhooks/nanocorp/route.ts`
+  - `app/api/stripe/webhook/route.ts`
+  - les deux consomment `lib/subscription-webhook.ts`
+  - activation sur `checkout.session.completed`
+  - désactivation sur `customer.subscription.deleted`
+- API de support livrée :
+  - `app/api/stripe/payment-link/route.ts` retourne le lien de paiement, le prix et le statut d’abonnement pour l’utilisateur connecté
+- Configuration runtime :
+  - variable Vercel `BATIFLOW_PRO_PAYMENT_LINK` définie avec le lien NanoCorp/Stripe courant
+  - fallback codé en dur conservé dans `lib/billing.ts` pour éviter un paywall vide si l’env se perd
+
+### Validation effectuée
+- `psql "$DATABASE_URL" -f supabase/migrations/20260417_batiflow_subscription_paywall.sql` ✅
+- `nanocorp vercel env set` pour `BATIFLOW_PRO_PAYMENT_LINK` ✅
+- `npm run lint` ✅
+- `npm run build` ✅
+- smoke test local webhook sur `next start` ✅
+  - `POST /api/webhooks/nanocorp` avec `checkout.session.completed` sur `qa-subscription-test@pagehush.nanocorp.app` → utilisateur passé en `pro`
+  - `POST /api/stripe/webhook` avec `customer.subscription.deleted` sur la même adresse → utilisateur repassé en `free`
+  - vérification SQL directe confirmée après chaque appel
+
+### Risque ou limite restante
+- `nanocorp products list` remonte actuellement les produits BatiFlow Pro en `currency: "usd"` alors que le brief métier et l’UI affichent `14,90€/mois`. Le paywall a été livré avec le libellé demandé côté produit, mais un contrôle de cohérence de la devise Stripe réelle reste nécessaire côté catalogue NanoCorp/Stripe.
+
 ## 2026-04-17 Exploration + Fix — magic link prod en 127.0.0.1
 
 ### Documentation Next consultée pour cette tranche

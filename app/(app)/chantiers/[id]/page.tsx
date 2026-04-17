@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { modifierChantier } from "@/app/actions";
 import { ChantierForm } from "@/components/chantier-form";
-import { getCurrentUser, getChantierById } from "@/lib/batiflow-data";
+import { requireProUser } from "@/lib/access";
+import { getChantierById } from "@/lib/batiflow-data";
 
 export default async function EditChantierPage({
   params,
@@ -9,11 +10,7 @@ export default async function EditChantierPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const user = await getCurrentUser();
-
-  if (!user) {
-    notFound();
-  }
+  const user = await requireProUser();
 
   const chantier = await getChantierById(user.id, id);
 

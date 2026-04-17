@@ -1,19 +1,14 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { seDeconnecter } from "@/app/actions";
 import { MobileNav } from "@/components/mobile-nav";
-import { getCurrentUser } from "@/lib/batiflow-data";
+import { requireProUser } from "@/lib/access";
 
 export default async function AppLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect("/connexion");
-  }
+  const user = await requireProUser();
 
   return (
     <div className="bg-site min-h-screen pb-32 text-[var(--ink)]">

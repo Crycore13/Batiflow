@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getCurrentUser, listChantiersByUser } from "@/lib/batiflow-data";
+import { requireProUser } from "@/lib/access";
+import { listChantiersByUser } from "@/lib/batiflow-data";
 import {
   formatCurrency,
   getAcompteAmount,
@@ -11,11 +11,7 @@ import {
 } from "@/lib/batiflow-shared";
 
 export default async function ChantiersPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect("/connexion");
-  }
+  const user = await requireProUser();
 
   const chantiers = await listChantiersByUser(user.id);
 

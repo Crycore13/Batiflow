@@ -1,13 +1,9 @@
-import { redirect } from "next/navigation";
 import { DashboardView } from "@/components/dashboard-view";
-import { getCurrentUser, listChantiersByUser } from "@/lib/batiflow-data";
+import { requireProUser } from "@/lib/access";
+import { listChantiersByUser } from "@/lib/batiflow-data";
 
 export default async function TableauDeBordPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect("/connexion");
-  }
+  const user = await requireProUser();
 
   const chantiers = await listChantiersByUser(user.id);
 
