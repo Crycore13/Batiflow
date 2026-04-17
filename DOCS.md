@@ -1,5 +1,27 @@
 # Project Docs
 
+## 2026-04-17 Exploration — campagne outreach artisans BTP
+
+### Demande opérée
+- Envoyer jusqu’à 20 emails personnalisés à des artisans BTP depuis `prospects-artisans.csv`, en utilisant uniquement des contacts disposant d’un email dans le CSV, puis tracer les envois dans `outreach-log.csv`.
+
+### Constats
+- Le fichier local `prospects-artisans.csv` contient bien 55 prospects, mais **0 email renseigné** dans la colonne `email`.
+- La copie NanoCorp `prospects_artisans` lue via `nanocorp docs read prospects_artisans` contient exactement le même CSV, donc aucune source interne enrichie n’était disponible.
+- Les commandes NanoCorp inspectées :
+  - `nanocorp emails send` permet bien l’envoi unitaire
+  - `nanocorp prospects verify-email` exige un prénom + nom de personne, ce que le CSV ne fournit pas de manière fiable
+  - `nanocorp prospects search` remonte surtout des résultats incomplets ou non pertinents pour ces artisans locaux
+- Quelques tests de récupération web publique ont permis d’identifier au moins un site/artisan, mais pas un volume suffisamment fiable pour envoyer 20 emails conformes sans risque de faux destinataire.
+
+### Décision d’exécution
+- Aucun email n’a été envoyé dans cette tranche, car le brief impose d’utiliser uniquement des contacts ayant un email dans le CSV et le fichier fourni n’en contient aucun.
+- `outreach-log.csv` a été créé avec l’en-tête attendu pour recevoir les prochains envois dès qu’une liste enrichie sera disponible.
+
+### Suite recommandée
+- Fournir un CSV enrichi avec au moins 20 emails vérifiés.
+- Ou créer une tâche dédiée d’enrichissement des 55 prospects (site + email validé), distincte de la tâche d’envoi.
+
 ## 2026-04-17 Livraison — Paywall Stripe / BatiFlow Pro
 
 ### Documentation Next consultée pour cette tranche
