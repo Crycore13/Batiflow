@@ -1,5 +1,38 @@
 # Project Docs
 
+## 2026-04-18 Exploration + Fix — server action `/connexion` en prod (`E80`)
+
+### Documentation / sources consultées
+- `node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/serverActions.md`
+- `node_modules/next/dist/docs/01-app/02-guides/data-security.md`
+- `node_modules/next/dist/docs/01-app/02-guides/forms.md`
+- `node_modules/next/dist/server/app-render/action-handler.js`
+
+### Constat de départ
+- La soumission live de `https://pagehush.nanocorp.app/connexion` retombe immédiatement sur l’écran Next `This page couldn’t load`.
+- La capture HAR via `agent-browser` montre un `POST /connexion` à `500`.
+- Une reproduction depuis le navigateur avec `fetch()` retourne un flux RSC contenant `1:E{"digest":"2183965682@E80"}`.
+- Le code source Next 16 (`action-handler.js`) montre que `E80` correspond à `Invalid Server Actions request.` quand `Origin` ne correspond pas à `Host` / `X-Forwarded-Host`, sauf si l’origine figure dans `experimental.serverActions.allowedOrigins`.
+- `nanocorp vercel env list` confirme la présence des variables demandées côté projet Vercel :
+  - `APP_BASE_URL`
+  - `NANOCORP_EMAILS_API_URL`
+  - `NANOCORP_EMAILS_TOKEN`
+  - `DATABASE_URL`
+- Les replays HTTP hors navigateur (`curl`, `urllib`) réussissaient déjà et envoyaient bien l’e-mail. L’écart venait donc bien du contrôle CSRF des Server Actions déclenché uniquement sur les requêtes navigateur avec header `Origin`.
+
+### Correction appliquée
+- `next.config.ts` configure désormais `experimental.serverActions.allowedOrigins`.
+- La liste est construite à partir de `APP_BASE_URL`, `VERCEL_PROJECT_URL` et du fallback explicite `pagehush.nanocorp.app`.
+- Objectif : autoriser l’origine publique `pagehush.nanocorp.app` même si l’infra NanoCorp/Vercel transmet un `host` / `x-forwarded-host` différent au runtime.
+
+### Validation locale ciblée
+- `npm run lint` ✅
+- `npm run build` ✅
+- `next start` local + `POST /connexion` avec :
+  - `Host: 127.0.0.1:3000`
+  - `Origin: https://pagehush.nanocorp.app`
+- Résultat : `200` et message de succès RSC, donc plus de rejet `E80` sur le cas exact de mismatch origin/host.
+
 ## 2026-04-17 Exploration — campagne outreach artisans BTP
 
 ### Demande opérée
