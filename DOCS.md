@@ -19,11 +19,21 @@
   - `NANOCORP_EMAILS_TOKEN`
   - `DATABASE_URL`
 - Les replays HTTP hors navigateur (`curl`, `urllib`) réussissaient déjà et envoyaient bien l’e-mail. L’écart venait donc bien du contrôle CSRF des Server Actions déclenché uniquement sur les requêtes navigateur avec header `Origin`.
+- Après correction du `E80`, un second bug prod a été observé sur la consommation du lien:
+  - l’e-mail contenait bien une URL `https://pagehush.nanocorp.app/api/auth/magic-link?...`
+  - mais le clic redirigeait ensuite vers `https://pagehush-nano-corp.vercel.app/tableau-de-bord`, ce qui basculait sur la page de login Vercel
+  - la cause était `app/api/auth/magic-link/route.ts`, qui construisait encore la redirection finale à partir de `request.url` au lieu de l’URL publique configurée
 
 ### Correction appliquée
 - `next.config.ts` configure désormais `experimental.serverActions.allowedOrigins`.
 - La liste est construite à partir de `APP_BASE_URL`, `VERCEL_PROJECT_URL` et du fallback explicite `pagehush.nanocorp.app`.
 - Objectif : autoriser l’origine publique `pagehush.nanocorp.app` même si l’infra NanoCorp/Vercel transmet un `host` / `x-forwarded-host` différent au runtime.
+- `lib/app-url.ts` centralise maintenant la résolution de l’URL publique applicative.
+- `app/actions.ts` réutilise ce helper pour la génération du magic link.
+- `app/api/auth/magic-link/route.ts` réutilise aussi ce helper pour :
+  - les redirections d’erreur vers `/connexion`
+  - la redirection finale après consommation du token
+- Résultat attendu : même derrière le proxy NanoCorp/Vercel, le flow complet reste sur `https://pagehush.nanocorp.app/...`.
 
 ### Validation locale ciblée
 - `npm run lint` ✅
@@ -32,6 +42,10 @@
   - `Host: 127.0.0.1:3000`
   - `Origin: https://pagehush.nanocorp.app`
 - Résultat : `200` et message de succès RSC, donc plus de rejet `E80` sur le cas exact de mismatch origin/host.
+- `next start` local + ouverture d’un magic link généré :
+  - réponse `307`
+  - header `Location: https://pagehush.nanocorp.app/tableau-de-bord`
+  - donc plus de fuite de redirection vers `*.vercel.app`
 
 ## 2026-04-17 Exploration — campagne outreach artisans BTP
 

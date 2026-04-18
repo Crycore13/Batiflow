@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getConfiguredAppBaseUrl } from "@/lib/app-url";
 import { sendMagicLinkEmail } from "@/lib/email";
 import { requireProUser } from "@/lib/access";
 import type { StatutAcompte, StatutSolde } from "@/lib/batiflow-shared";
@@ -34,20 +35,10 @@ function parseNumber(value: FormDataEntryValue | null) {
 }
 
 async function getAppBaseUrl() {
-  const configuredBaseUrl =
-    process.env.APP_BASE_URL ??
-    process.env.NEXT_PUBLIC_APP_URL ??
-    process.env.VERCEL_PROJECT_URL ??
-    "http://localhost:3000";
-  const normalizedConfiguredBaseUrl = configuredBaseUrl.trim();
+  const configuredBaseUrl = getConfiguredAppBaseUrl();
 
-  if (
-    normalizedConfiguredBaseUrl &&
-    normalizedConfiguredBaseUrl !== "http://localhost:3000"
-  ) {
-    return normalizedConfiguredBaseUrl.startsWith("http")
-      ? normalizedConfiguredBaseUrl
-      : `https://${normalizedConfiguredBaseUrl}`;
+  if (configuredBaseUrl) {
+    return configuredBaseUrl;
   }
 
   const headerStore = await headers();
@@ -60,7 +51,7 @@ async function getAppBaseUrl() {
     return `${protocol}://${host}`;
   }
 
-  return normalizedConfiguredBaseUrl || "http://localhost:3000";
+  return "http://localhost:3000";
 }
 
 function parseChantierForm(formData: FormData) {

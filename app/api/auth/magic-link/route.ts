@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
+import { getConfiguredAppBaseUrl } from "@/lib/app-url";
 import {
   consumeMagicLink,
   getSessionCookieOptions,
   sessionCookieName,
 } from "@/lib/batiflow-data";
 
+function getAppBaseUrl(requestUrl: string) {
+  return getConfiguredAppBaseUrl() ?? new URL(requestUrl).origin;
+}
+
 function buildRedirectUrl(requestUrl: string, status?: string) {
-  const url = new URL("/connexion", requestUrl);
+  const url = new URL("/connexion", getAppBaseUrl(requestUrl));
 
   if (status) {
     url.searchParams.set("magicLink", status);
@@ -29,7 +34,7 @@ export async function GET(request: Request) {
     return NextResponse.redirect(buildRedirectUrl(request.url, result.status));
   }
 
-  const response = NextResponse.redirect(new URL(result.redirectTo, request.url));
+  const response = NextResponse.redirect(new URL(result.redirectTo, getAppBaseUrl(request.url)));
   response.cookies.set(sessionCookieName, result.sessionToken, getSessionCookieOptions());
 
   return response;
