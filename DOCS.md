@@ -47,6 +47,17 @@
   - header `Location: https://pagehush.nanocorp.app/tableau-de-bord`
   - donc plus de fuite de redirection vers `*.vercel.app`
 
+### Validation production finale
+- commit/push `7af121e` : correction `serverActions.allowedOrigins`
+- commit/push `5ab35ed` : correction de redirection publique pour `/api/auth/magic-link`
+- vérification live après déploiement final :
+  - ouverture de `https://pagehush.nanocorp.app/connexion` ✅
+  - soumission de `pagehush@nanocorp.app` ✅
+  - message de succès affiché dans le formulaire ✅
+  - e-mail reçu avec une URL magique `https://pagehush.nanocorp.app/api/auth/magic-link?...` ✅
+  - clic du lien magique → redirection finale sur `https://pagehush.nanocorp.app/tableau-de-bord` ✅
+- pour obtenir la redirection métier attendue vers `/tableau-de-bord` pendant la QA, le compte `pagehush@nanocorp.app` a été mis à jour en base de `free` vers `pro`.
+
 ## 2026-04-17 Exploration — campagne outreach artisans BTP
 
 ### Demande opérée
