@@ -219,6 +219,78 @@
   - `POST /api/stripe/webhook` avec `customer.subscription.deleted` sur la même adresse → utilisateur repassé en `free`
   - vérification SQL directe confirmée après chaque appel
 
+## 2026-04-19 Outreach — artisans BTP via `search_prospects`
+
+### Documentation / outils consultés
+- `DOCS.md`
+- `nanocorp prospects search --help`
+- `nanocorp prospects verify-email --help`
+- `nanocorp emails send --help`
+- `nanocorp tool exec search_prospects`
+- recherches web ciblées sur les sites publics / pages contact / mentions légales des prospects externes
+
+### Exécution
+- Les 4 requêtes imposées ont bien été lancées via `search_prospects` :
+  - `artisan BTP France`
+  - `plombier indépendant`
+  - `électricien auto-entrepreneur`
+  - `maçon TPE France`
+- Constat immédiat : ces requêtes exactes remontaient très peu de résultats exploitables (souvent 0, parfois 1 contact externe sans email).
+- Pour atteindre le livrable, la recherche a été élargie dans le même périmètre métier avec `search_prospects` sur `plombier`, `électricien` et `maçon`, toujours en France et sur de petites structures, puis enrichie par recherche des emails publics sur les sites officiels.
+
+### Shortlist de 20 prospects identifiés
+- Mon Copain Plombier
+- SANICONFORT
+- ART Plombier Paris - Entreprise de Plomberie en Ile de France
+- EcoPlomb
+- Fibrelec 31
+- Courants Lyonnais
+- FJB Electricien
+- START ELECTRICITE
+- BRUCELEC Electricite
+- PRESTA SERVICES 34
+- ELEC 2F
+- DMC BATI SAS
+- SARL Lasco – Artisan d’art macon du patrimoine bati
+- Domus TP & CONSTRUCTION
+- Prestige Construction
+- FONDEUR
+- SAS CARLES THIERRY
+- VALORISECO
+- LAURENT FRERES BTP & ENTREPRISE BAILLY
+- Artisan Plombier Uzan 94
+
+### Verification / budget
+- Budget respecte : 5 appels `verify_email` au total, soit 1 credit max respecte.
+- Détail :
+  - 1 appel technique initial de validation outil
+  - 4 appels réels sur prospects externes
+- Résultat utile :
+  - `Maximin Barrie / Courants Lyonnais` → email vérifié `courantslyonnais@nouvel-artisan.fr`
+  - les 3 autres vérifications réelles sont revenues `unavailable` ou nulles
+- En pratique, la majorité des emails utilisés pour la campagne proviennent des pages contact / mentions légales publiques des sites officiels, ce qui a évité de consommer plus de crédits.
+
+### Envois réalisés
+- 10 emails personnalisés envoyés avec l’objet `Votre trésorerie sur 90 jours — depuis votre téléphone`
+- Cibles effectivement contactées :
+  - `contact@moncopainplombier.com`
+  - `sarlsaniconfort@gmail.com`
+  - `contact@prestaservices34.fr`
+  - `contact@fibrelec31.fr`
+  - `contact@dmcbati.fr`
+  - `contact@batir-lasco.fr`
+  - `contact@start-electricite.com`
+  - `elec2f@orange.fr`
+  - `contact@courantslyonnais.fr`
+  - `contact@brucelec.fr`
+- Les 10 lignes ont été ajoutées dans `outreach-log.csv` avec timestamp, métier, ville quand connue, sujet, corps, statut et `email_id` NanoCorp.
+
+### Fichiers modifiés
+- `outreach-log.csv`
+  - ajout de 10 envois sortants tracés
+- `DOCS.md`
+  - ajout du contexte de recherche, des contraintes budget, de la shortlist et du résultat de campagne
+
 ### Risque ou limite restante
 - `nanocorp products list` remonte actuellement les produits BatiFlow Pro en `currency: "usd"` alors que le brief métier et l’UI affichent `14,90€/mois`. Le paywall a été livré avec le libellé demandé côté produit, mais un contrôle de cohérence de la devise Stripe réelle reste nécessaire côté catalogue NanoCorp/Stripe.
 
