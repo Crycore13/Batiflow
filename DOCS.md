@@ -1,5 +1,52 @@
 # Project Docs
 
+## 2026-04-19 Exploration + refonte `/abonnement`
+
+### Documentation / outils consultés
+- `/opt/nanocorp/skills/frontend-design/SKILL.md`
+- `/opt/nanocorp/skills/agent-browser/SKILL.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/04-linking-and-navigating.md`
+- `node_modules/next/dist/docs/01-app/01-getting-started/11-css.md`
+- `node_modules/next/dist/docs/01-app/03-api-reference/02-components/link.md`
+- `nanocorp --help`
+- `nanocorp products create --help`
+- `nanocorp payments --help`
+- `nanocorp products list`
+- `nanocorp payments link`
+
+### Constats
+- Le repo ne contenait pas `node_modules`; `npm ci` a ete lance pour pouvoir lire la doc locale Next 16 imposee par `AGENTS.md` et preparer le build.
+- La page actuelle `app/abonnement/page.tsx` etait fonctionnelle mais trop defensive commercialement:
+  - titre generique
+  - CTA orange "S'abonner a 14,90€/mois"
+  - aucun vrai bloc de reassurance conversion
+  - aucun lien "En savoir plus" vers la landing
+- La configuration paiement reste centralisee via `lib/billing.ts` avec fallback sur `https://buy.stripe.com/9B6eVe4Li2az0Yi1OjeOH1G`.
+- La CLI NanoCorp expose:
+  - creation de produit avec nom / prix / devise
+  - recuperation du payment link
+  - mais aucun parametre de free trial / trial days / no-card trial
+- `nanocorp products list` remonte toujours plusieurs produits actifs `BatiFlow Pro`, et `nanocorp payments link` renvoie toujours le meme lien Stripe unique.
+- Conclusion produit: dans cet environnement, un vrai essai gratuit Stripe de 7 jours n'est pas configurable rapidement sans support CLI/API supplementaire; la page doit donc rester honnete et vendre une promesse "sans risque" plutot qu'un faux essai gratuit.
+
+### Changements appliques
+- `app/abonnement/page.tsx`
+  - nouveau hero plus direct avec headline conversion et badge "sans risque 7 jours"
+  - trois blocs benefices clairs: tresorerie 90 jours, alertes retard, saisie mobile
+  - trois badges de reassurance visibles des l'entree de page
+  - CTA principal pleine largeur, vert, plus visible sur mobile
+  - ajout du lien `En savoir plus` vers `/`
+  - conservation du lien `J'ai deja paye` vers `/checkout/success`
+- `lib/billing.ts`
+  - ajout de constantes `BATIFLOW_PRO_TRIAL_DAYS` et `BATIFLOW_PRO_SATISFACTION_DAYS`
+  - configuration actuelle: `BATIFLOW_PRO_TRIAL_DAYS = 0` pour refléter l'absence de vrai trial configurable via NanoCorp/Stripe
+  - objectif: permettre d'activer facilement la copie "7 jours gratuits" plus tard sans reouvrir toute la page
+
+### Validation locale
+- `npm run lint` ✅
+- `npm run build` ✅
+- Verification live mobile prevue apres push et propagation Vercel.
+
 ## 2026-04-19 QA finale — E2E BatiFlow jusqu'au paywall
 
 ### Documentation / outils consultés
