@@ -1,5 +1,40 @@
 # Project Docs
 
+## 2026-04-19 QA finale — E2E BatiFlow jusqu'au paywall
+
+### Documentation / outils consultés
+- `/opt/nanocorp/skills/agent-browser/SKILL.md`
+- `agent-browser -h`
+- `nanocorp emails --help`
+- `nanocorp emails read --help`
+- `nanocorp payments link`
+- `nanocorp products list`
+
+### Préparation
+- Vérification du lien Stripe officiel NanoCorp : `https://buy.stripe.com/9B6eVe4Li2az0Yi1OjeOH1G`
+- Pour tester le scénario attendu "utilisateur non-pro", le compte `pagehush@nanocorp.app` a été passé temporairement de `pro` à `free`, puis remis à `pro` en fin de QA.
+- `agent-browser install` a été exécuté pour installer Chrome dans l'environnement de travail.
+
+### Résultat E2E live (`https://pagehush.nanocorp.app`)
+- Étape 1 `/` : ✅ la landing s'affiche correctement et reste sur `https://pagehush.nanocorp.app/`
+- Étape 2 CTA "Créer mon compte gratuitement" : ✅ le lien pointe vers `/connexion` et la navigation ouvre bien `https://pagehush.nanocorp.app/connexion`
+- Étape 3 envoi magic link : ✅ le formulaire accepte `pagehush@nanocorp.app`, affiche le message de succès et un nouvel e-mail est reçu
+- Étape 3 URL du magic link : ✅ l'e-mail reçu (`8b00cd64-6f14-46ff-8a33-02c6e167be7a`) contient bien `https://pagehush.nanocorp.app/api/auth/magic-link?...`
+- Étape 4 clic magic link : ✅ le lien redirige bien vers `https://pagehush.nanocorp.app/abonnement` pour un utilisateur `free`
+- Étape 5 page `/abonnement` : ✅ le paywall affiche `14,90€`, `par mois` et le bouton `S'abonner à 14,90€/mois`
+- Étape 6 bouton Stripe : ✅ le CTA pointe et redirige vers `https://buy.stripe.com/9B6eVe4Li2az0Yi1OjeOH1G`, identique au lien retourné par `nanocorp payments link`
+
+### Détails observés
+- E-mail sortant de test : `d4437533-119f-4655-9b28-037c065fd544`
+- E-mail entrant reçu : `8b00cd64-6f14-46ff-8a33-02c6e167be7a`
+- Sujet : `Votre lien de connexion BatiFlow`
+- Extrait utile du corps texte :
+  - `Ouvrir mon tableau de bord https://pagehush.nanocorp.app/api/auth/magic-link?token=...`
+
+### Corrections appliquées
+- Aucune correction applicative nécessaire pendant cette QA : le flow live jusqu'au paywall est conforme.
+- Remise à l'état initial du compte `pagehush@nanocorp.app` après test : `subscription_status = 'pro'`.
+
 ## 2026-04-18 Exploration + Fix — server action `/connexion` en prod (`E80`)
 
 ### Documentation / sources consultées
