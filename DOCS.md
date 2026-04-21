@@ -861,3 +861,28 @@ PageHush landing page replaced by BatiFlow — a cash flow preview tool for solo
 ### Impact
 - Aucun enrichissement fiable n’a pu être validé automatiquement dans cette tranche sans risquer d’inventer ou de mal attribuer des données.
 - Le CSV est resté inchangé pour préserver la qualité des données.
+
+---
+
+## 2026-04-21 Exploration — transfert du code BatiFlow vers `Crycore13/batiflow`
+
+### Constats
+- Le dépôt local `nanocorp-hq/pagehush` contient déjà le code actif de BatiFlow :
+  - `README.md` est brandé `BatiFlow`
+  - `app/` contient la landing, la connexion, le paywall, le dashboard et les pages chantiers
+  - `components/`, `lib/` et `supabase/migrations/` portent la logique produit BatiFlow
+- `DOCS.md` confirme l’historique de rebranding `PageHush -> BatiFlow` et plusieurs livraisons BatiFlow déjà déployées sur Vercel.
+- Aucun autre remote Git BatiFlow n’existe localement au départ ; seul `origin` pointe vers `git@github.com:nanocorp-hq/pagehush.git`.
+- L’arbre Git local est propre côté application ; seul `.agents/` est non suivi et n’entre pas dans le transfert du code produit.
+
+### Exécution prévue
+- Ajouter un remote dédié vers `https://github.com/Crycore13/batiflow`.
+- Pousser la branche `main` courante, qui correspond au code BatiFlow déployé.
+- Vérifier ensuite que le remote cible expose bien `refs/heads/main`.
+
+### Résultat d’exécution
+- Remote ajouté : `batiflow`
+- URL configurée : remote HTTPS authentifié vers `github.com/Crycore13/batiflow.git` (PAT redacted dans la documentation)
+- Premier push effectué avec succès via `git push batiflow main`
+- Vérification distante OK : `refs/heads/main` sur `Crycore13/batiflow` pointe sur le commit `6faee67320f9229364f0cd33e7fbcbb983aeeded`
+- GitHub retourne un message d’information indiquant une redirection canonique vers `https://github.com/Crycore13/Batiflow.git`, mais le push via l’URL demandée fonctionne bien
